@@ -142,6 +142,24 @@
       filter: brightness(0.97);
     }
 
+    /* Botones de acción en tabla */
+    .action-btn {
+      padding: 3px 8px;
+      font-size: 11px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      margin: 0 2px;
+    }
+    .edit-btn {
+      background: #ffc107;
+      color: #000;
+    }
+    .delete-btn {
+      background: #dc3545;
+      color: #fff;
+    }
+
     /* TABLA */
     table {
       width: 100%;
@@ -274,7 +292,9 @@
             <option value="">Seleccionar...</option>
             <option value="A">Turno A</option>
             <option value="B">Turno B</option>
-           </select>
+            <option value="C">Turno C</option>
+            <option value="Noche">Noche</option>
+          </select>
         </div>
         <div>
           <label for="faena">Faena / Proyecto</label>
@@ -285,11 +305,10 @@
           <label for="equipo">Equipo</label>
           <select id="equipo">
             <option value="">Seleccionar...</option>
-            <option value="BOOMER S1D">BOOMER S1D J-133</option>
-	    <option value="BOOMER S1D">BOOMER S1D J-187</option>
-            <option value="SIMBA S7D">SIMBA S7D J-163</option>
+            <option value="BOOMER S1D">BOOMER S1D</option>
+            <option value="SIMBA S7D">SIMBA S7D</option>
             <option value="BOLTEC M10S">BOLTEC M10S</option>
-            <option value="SANDVIK DD321D">SANDVIK DD321D J-587</option>
+            <option value="Sandvik DD321D">Sandvik DD321D</option>
           </select>
         </div>
 
@@ -325,7 +344,7 @@
           <input type="number" id="profundidadProm" min="0" step="0.01" />
         </div>
 
-        <!-- NUEVO: Desplegable de tipo de barra -->
+        <!-- Desplegable de tipo de barra -->
         <div>
           <label for="tipoBarra">Tipo de barra</label>
           <select id="tipoBarra" name="tipoBarra">
@@ -421,6 +440,7 @@
             <th>Consumo BIT (unid)</th>
             <th>Consumo BARRA (unid)</th>
             <th>Consumo CULATIN (unid)</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -428,7 +448,7 @@
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="10">TOTALES</td>
+            <td colspan="11">TOTALES</td>
             <td id="totalMetros">0</td>
             <td id="totalAcero">0</td>
             <td id="totalBits">0</td>
@@ -455,6 +475,7 @@
     };
 
     const STORAGE_KEY = "registro_perforacion_datos";
+    let editIndex = null; // índice que se está editando (o null si es nuevo)
 
     function cargarDatos() {
       const data = localStorage.getItem(STORAGE_KEY);
@@ -530,6 +551,23 @@
           tr.appendChild(td);
         });
 
+        // Celda de acciones (Editar / Eliminar)
+        const accionesTd = document.createElement("td");
+
+        const btnEdit = document.createElement("button");
+        btnEdit.textContent = "Editar";
+        btnEdit.className = "action-btn edit-btn";
+        btnEdit.addEventListener("click", () => iniciarEdicion(index));
+
+        const btnDelete = document.createElement("button");
+        btnDelete.textContent = "Eliminar";
+        btnDelete.className = "action-btn delete-btn";
+        btnDelete.addEventListener("click", () => eliminarRegistro(index));
+
+        accionesTd.appendChild(btnEdit);
+        accionesTd.appendChild(btnDelete);
+        tr.appendChild(accionesTd);
+
         tbody.appendChild(tr);
 
         totalMetros   += reg.metrosPerforados;
@@ -600,7 +638,17 @@
       };
 
       const registros = cargarDatos();
-      registros.push(nuevoReg);
+
+      if (editIndex === null) {
+        // Nuevo registro
+        registros.push(nuevoReg);
+      } else {
+        // Actualizar registro existente
+        registros[editIndex] = nuevoReg;
+        editIndex = null;
+        document.getElementById("addRowBtn").textContent = "Agregar registro";
+      }
+
       guardarDatos(registros);
       refrescarTabla();
 
@@ -608,9 +656,48 @@
       document.getElementById("profundidadProm").value = "";
     }
 
+    function iniciarEdicion(index) {
+      const registros = cargarDatos();
+      const reg = registros[index];
+      if (!reg) return;
+
+      document.getElementById("fecha").value            = reg.fecha;
+      document.getElementById("turno").value            = reg.turno;
+      document.getElementById("faena").value            = reg.faena;
+      document.getElementById("equipo").value           = reg.equipo;
+      document.getElementById("frente").value           = reg.frente;
+      document.getElementById("tipoPerforacion").value  = reg.tipoPerforacion;
+      document.getElementById("diametro").value         = reg.diametro;
+      document.getElementById("numTaladros").value      = reg.numTaladros;
+      document.getElementById("profundidadProm").value  = reg.profundidadProm;
+      document.getElementById("largoBarra").value       = reg.largoBarra;
+
+      editIndex = index;
+      document.getElementById("addRowBtn").textContent = "Guardar cambios";
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function eliminarRegistro(index) {
+      const registros = cargarDatos();
+      if (index < 0 || index >= registros.length) return;
+      if (!confirm("¿Deseas eliminar este registro?")) return;
+
+      registros.splice(index, 1);
+      guardarDatos(registros);
+
+      // Si estabas editando este registro, resetea el modo edición
+      editIndex = null;
+      document.getElementById("addRowBtn").textContent = "Agregar registro";
+
+      refrescarTabla();
+    }
+
     function limpiarTodo() {
       if (confirm("¿Seguro que deseas borrar todos los registros guardados?")) {
         localStorage.removeItem(STORAGE_KEY);
+        editIndex = null;
+        document.getElementById("addRowBtn").textContent = "Agregar registro";
         refrescarTabla();
       }
     }
@@ -673,7 +760,7 @@
       document.getElementById("downloadPdfBtn").addEventListener("click", descargarPDF);
       document.getElementById("exportCsvBtn").addEventListener("click", exportarCSV);
 
-      // NUEVO: configuración de barras para autocompletar largoBarra
+      // configuración de barras para autocompletar largoBarra
       const barrasConfig = {
         "4.30_T38R32": 4.30,
         "3.70_T38R32": 3.70,
