@@ -2,787 +2,805 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Registro de Perforación - Consumo de Insumos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registro de Perforación PRO</title>
   <style>
     :root {
-      --primary: #007bff;
-      --danger: #dc3545;
-      --success: #28a745;
-      --secondary: #6c757d;
-      --bg-page: #f0f2f5;
-      --card-bg: #ffffff;
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-2: #1f2937;
+      --soft: #334155;
+      --line: #243244;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #22c55e;
+      --accent-2: #38bdf8;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+      --violet: #8b5cf6;
+      --white: #ffffff;
+      --shadow: 0 10px 30px rgba(0,0,0,.28);
+      --radius: 16px;
     }
 
+    * { box-sizing: border-box; }
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
-      background: var(--bg-page);
-      color: #222;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #0b1220 0%, #111827 100%);
+      color: var(--text);
     }
-
-    /* HEADER */
     header {
-      background: #222;
-      color: #fff;
-      padding: 10px 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      background: linear-gradient(135deg, #0f172a, #111827 55%, #0b3b2e);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      box-shadow: var(--shadow);
     }
-    .header-content {
-      max-width: 1200px;
+    .wrap {
+      max-width: 1380px;
       margin: 0 auto;
+      padding: 0 18px;
+    }
+    .hero {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 18px;
+      padding: 20px 0;
     }
-    .header-content img {
-      height: 55px;
-      border-radius: 4px;
+    .logo {
+      width: 70px;
+      height: 70px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.08);
+      font-weight: 700;
+      color: #bbf7d0;
+      font-size: 18px;
     }
-    .title-block {
-      display: flex;
-      flex-direction: column;
-    }
-    header h1 {
+    .hero h1 {
       margin: 0;
-      font-size: 20px;
-      line-height: 1.3;
+      font-size: 28px;
+      line-height: 1.15;
     }
-    .made-by {
-      font-size: 12px;
-      color: #cccccc;
-      margin-top: 2px;
+    .hero p {
+      margin: 6px 0 0;
+      color: #cbd5e1;
+      font-size: 14px;
     }
 
-    /* LAYOUT GENERAL */
-    main {
-      max-width: 1200px;
-      margin: 20px auto;
-      padding: 0 15px 30px;
+    main { padding: 22px 0 40px; }
+    .grid-main {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 18px;
     }
     .card {
-      background: var(--card-bg);
-      border-radius: 6px;
-      padding: 15px 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-      border: 1px solid #e1e1e1;
+      background: rgba(17,24,39,.96);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
     }
-    h2 {
-      margin-top: 0;
+    .card h2 {
+      margin: 0 0 12px;
       font-size: 18px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      border-bottom: 1px solid #eee;
-      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      padding-bottom: 10px;
+    }
+    .subnote {
+      color: var(--muted);
+      font-size: 12px;
+      margin: 0 0 14px;
+      line-height: 1.45;
     }
 
-    /* FORMULARIO */
+    .status-bar {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .status-pill {
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    .status-pill strong {
+      display: block;
+      font-size: 20px;
+      margin-top: 4px;
+    }
+    .status-pill small { color: var(--muted); }
+
     .form-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 10px 15px;
-      align-items: center;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 12px 14px;
     }
-    label {
-      font-size: 13px;
-      font-weight: bold;
+    .field label {
       display: block;
-      margin-bottom: 3px;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: #cbd5e1;
+      font-weight: 700;
+      letter-spacing: .2px;
     }
     input, select {
       width: 100%;
-      padding: 5px 6px;
-      font-size: 13px;
-      box-sizing: border-box;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    input:focus,
-    select:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 2px rgba(0,123,255,0.2);
-    }
-
-    /* BOTONES */
-    button {
-      padding: 8px 16px;
+      padding: 11px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: #0b1220;
+      color: var(--text);
       font-size: 14px;
-      border-radius: 4px;
-      border: none;
-      cursor: pointer;
-      margin-right: 5px;
-      margin-bottom: 5px;
-      transition: background 0.15s ease, transform 0.05s ease;
     }
-    button#addRowBtn {
-      background: var(--primary);
-      color: #fff;
-    }
-    button#clearDataBtn {
-      background: var(--danger);
-      color: #fff;
-    }
-    button#downloadPdfBtn {
-      background: var(--success);
-      color: #fff;
-    }
-    button#exportCsvBtn {
-      background: var(--secondary);
-      color: #fff;
-    }
-    button:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.03);
-    }
-    button:active {
-      transform: translateY(0);
-      filter: brightness(0.97);
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--accent-2);
+      box-shadow: 0 0 0 3px rgba(56,189,248,.18);
     }
 
-    /* Botones de acción en tabla */
-    .action-btn {
-      padding: 3px 8px;
-      font-size: 11px;
-      border-radius: 4px;
-      border: none;
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 11px 16px;
+      font-size: 14px;
+      font-weight: 700;
       cursor: pointer;
-      margin: 0 2px;
+      transition: .15s ease;
     }
-    .edit-btn {
-      background: #ffc107;
-      color: #000;
+    button:hover { transform: translateY(-1px); filter: brightness(1.05); }
+    .btn-primary { background: var(--accent); color: #062b17; }
+    .btn-secondary { background: #1d4ed8; color: white; }
+    .btn-dark { background: #334155; color: white; }
+    .btn-warn { background: var(--warn); color: #291700; }
+    .btn-danger { background: var(--danger); color: white; }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0,1fr));
+      gap: 12px;
+      margin-top: 18px;
     }
-    .delete-btn {
-      background: #dc3545;
-      color: #fff;
+    .kpi {
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.08);
+      padding: 14px;
+      border-radius: 14px;
+      min-height: 90px;
+    }
+    .kpi .t { color: var(--muted); font-size: 12px; text-transform: uppercase; }
+    .kpi .v { font-size: 24px; font-weight: 700; margin-top: 8px; }
+    .kpi .s { color: #cbd5e1; font-size: 12px; margin-top: 6px; }
+
+    .chart-box {
+      margin-top: 16px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    #chartCanvas {
+      width: 100%;
+      height: 280px;
+      display: block;
+      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0));
+      border-radius: 10px;
     }
 
-    /* TABLA */
+    .table-wrap {
+      overflow: auto;
+      margin-top: 14px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 14px;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 12px;
+      min-width: 1400px;
+      background: #0b1220;
     }
     th, td {
-      border: 1px solid #ddd;
-      padding: 4px 6px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      padding: 10px 8px;
       text-align: center;
+      font-size: 12px;
+      vertical-align: middle;
     }
     th {
-      background: #f5f5f5;
-      font-weight: bold;
+      background: #10192c;
+      color: #dbeafe;
+      position: sticky;
+      top: 0;
+      z-index: 2;
     }
-    tfoot td {
-      font-weight: bold;
-      background: #fafafa;
-    }
-    .small-note {
-      font-size: 11px;
-      color: #555;
-    }
-    @media (max-width: 768px) {
-      table {
-        font-size: 11px;
-      }
-    }
+    tr:hover td { background: rgba(255,255,255,.025); }
 
-    /* DASHBOARD */
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 15px;
-      margin-top: 10px;
-    }
-    .kpi-card {
-      background: #f8f9fa;
-      border-radius: 6px;
-      padding: 10px 15px;
-      border-left: 4px solid var(--primary);
-      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
-    }
-    .kpi-title {
+    .mini-btn {
+      padding: 7px 10px;
+      border-radius: 10px;
       font-size: 12px;
-      text-transform: uppercase;
-      color: #555;
-      margin-bottom: 4px;
+      margin: 2px;
     }
-    .kpi-value {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 2px;
-    }
-    .kpi-subtitle {
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
       font-size: 11px;
-      color: #777;
+      font-weight: 700;
+    }
+    .ok { background: rgba(34,197,94,.14); color: #86efac; }
+    .pending { background: rgba(245,158,11,.15); color: #fcd34d; }
+    .error { background: rgba(239,68,68,.15); color: #fca5a5; }
+
+    .config-box {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px dashed rgba(56,189,248,.5);
+      background: rgba(56,189,248,.06);
+    }
+    .config-box code {
+      color: #bae6fd;
+      word-break: break-all;
     }
 
-    /* PIE DE PÁGINA (CRÉDITO) */
     .footer {
       text-align: center;
-      padding: 10px 15px 20px;
+      color: var(--muted);
       font-size: 12px;
-      color: #666;
-      margin-top: 10px;
-      border-top: 1px solid #ddd;
-      background: #fafafa;
+      padding: 20px 0 8px;
     }
 
-    /* Para que el PDF salga limpio */
+    @media (max-width: 1180px) {
+      .grid-main, .form-grid, .kpi-grid, .status-bar { grid-template-columns: 1fr; }
+    }
+
     @media print {
-      header {
-        box-shadow: none;
-      }
-      main {
-        max-width: 100%;
-        margin: 0;
-        padding: 0 10mm;
-      }
-      button {
-        display: none;
-      }
-      .form-grid {
-        display: none;
-      }
-      .card:first-of-type h2,
-      .card:first-of-type p.small-note {
-        display: none;
-      }
-      body {
-        background: #fff;
-      }
-      .footer {
-        margin-top: 30px;
-        border-top: none;
-        background: #fff;
-      }
+      body { background: white; color: #111; }
+      header, .actions, .config-box { display: none; }
+      .card { box-shadow: none; border: 1px solid #ddd; background: white; }
+      th { position: static; }
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="header-content">
-      <img src="logo_asefortmec.png" alt="Logo Asefortmec" />
-      <div class="title-block">
-        <h1>Registro de Perforación – Consumo de Acero, Bits, Barras y Culatines</h1>
-        <div class="made-by">
-          Creado por <strong>Bernardo Ojeda Molina</strong> – Jefe de Innovación y Formación,
-        </div>
+    <div class="wrap hero">
+      <div class="logo">BOM</div>
+      <div>
+        <h1>Registro de Perforación PRO</h1>
+        <p>Control operacional, consumo de insumos, edición local y sincronización a Google Sheets.</p>
       </div>
     </div>
   </header>
 
-  <main>
-    <!-- Ingreso de datos -->
-    <section class="card">
-      <h2>Ingreso de datos</h2>
-      <p class="small-note">
-        Registra los datos de perforación por frente y turno. Los registros se guardan automáticamente en este navegador usando <strong>localStorage</strong>.
-      </p>
-      <div class="form-grid">
-        <div>
-          <label for="fecha">Fecha</label>
-          <input type="date" id="fecha" />
-        </div>
-        <div>
-          <label for="turno">Turno</label>
-          <select id="turno">
-            <option value="">Seleccionar...</option>
-            <option value="A">Turno A</option>
-            <option value="B">Turno B</option>
-            </select>
-        </div>
-        <div>
-          <label for="faena">Faena / Proyecto</label>
-          <input type="text" id="faena" placeholder="Ej: Chuquicamata, Subterránea..." />
+  <main class="wrap">
+    <div class="grid-main">
+      <section class="card">
+        <h2>Ingreso de datos</h2>
+        <p class="subnote">Esta versión mejora tu archivo original, que guardaba información solo en el navegador con <strong>localStorage</strong>, agregando sincronización a una base en Google Sheets, control de edición y estado de envío. fileciteturn0file0</p>
+
+        <div class="status-bar">
+          <div class="status-pill">
+            <small>Registros locales</small>
+            <strong id="statusLocalCount">0</strong>
+          </div>
+          <div class="status-pill">
+            <small>Pendientes por sincronizar</small>
+            <strong id="statusPendingCount">0</strong>
+          </div>
+          <div class="status-pill">
+            <small>Estado conexión base</small>
+            <strong id="statusBase">Sin configurar</strong>
+          </div>
         </div>
 
-        <div>
-          <label for="equipo">Equipo</label>
-          <select id="equipo">
-            <option value="">Seleccionar...</option>
-            <option value="BOOMER S1D">BOOMER S1D J-133</option>
-	    <option value="BOOMER S1D">BOOMER S1D J-187</option>
-            <option value="SIMBA S7D">SIMBA S7D J-163</option>
-            <option value="BOLTEC M10S">BOLTEC M10S</option>
-            <option value="SANDVIK DD321D">SANDVIK DD321D J-587</option>
-          </select>
+        <div class="form-grid">
+          <div class="field"><label for="fecha">Fecha</label><input type="date" id="fecha"></div>
+          <div class="field"><label for="turno">Turno</label><select id="turno"><option value="">Seleccionar...</option><option value="A">Turno A</option><option value="B">Turno B</option><option value="C">Turno C</option></select></div>
+          <div class="field"><label for="faena">Faena / Proyecto</label><input type="text" id="faena" placeholder="Ej: El Teniente"></div>
+
+          <div class="field"><label for="equipo">Equipo</label><select id="equipo"><option value="">Seleccionar...</option><option value="BOOMER S1D J-133">BOOMER S1D J-133</option><option value="BOOMER S1D J-187">BOOMER S1D J-187</option><option value="SIMBA S7D J-163">SIMBA S7D J-163</option><option value="BOLTEC M10S">BOLTEC M10S</option><option value="SANDVIK DD321D J-587">SANDVIK DD321D J-587</option></select></div>
+          <div class="field"><label for="operador">Operador</label><input type="text" id="operador" placeholder="Nombre operador"></div>
+          <div class="field"><label for="frente">Frente / Sector</label><input type="text" id="frente" placeholder="Ej: Panel 5"></div>
+
+          <div class="field"><label for="tipoPerforacion">Tipo de perforación</label><select id="tipoPerforacion"><option value="">Seleccionar...</option><option value="Avance">Avance</option><option value="Fortificación">Fortificación</option><option value="Demolición de muros">Demolición de muros</option><option value="Otra">Otra</option></select></div>
+          <div class="field"><label for="diametro">Diámetro (mm)</label><select id="diametro"><option value="">Seleccionar...</option><option value="51">51</option><option value="45">45</option><option value="64">64</option></select></div>
+          <div class="field"><label for="tipoBarra">Tipo de barra</label><select id="tipoBarra"><option value="">Seleccionar...</option><option value="4.30_T38R32">Acero 4,30 m T38R32</option><option value="3.70_T38R32">Acero 3,70 m T38R32</option><option value="3.10_T38R32">Acero 3,10 m T38R32</option><option value="2.70_T38R32">Acero 2,70 m T38R32</option><option value="1.50_T38T38">MF 1,50 m T38T38</option></select></div>
+
+          <div class="field"><label for="largoBarra">Largo barra (m)</label><input type="number" id="largoBarra" min="0" step="0.01"></div>
+          <div class="field"><label for="numTaladros">N° taladros</label><input type="number" id="numTaladros" min="0" step="1"></div>
+          <div class="field"><label for="profundidadProm">Profundidad promedio (m)</label><input type="number" id="profundidadProm" min="0" step="0.01"></div>
         </div>
 
-        <div>
-          <label for="frente">Frente / Sector</label>
-          <input type="text" id="frente" placeholder="Ej: Galería 1200, Panel 5..." />
-        </div>
-        <div>
-          <label for="tipoPerforacion">Tipo de perforación</label>
-          <select id="tipoPerforacion">
-            <option value="">Seleccionar...</option>
-            <option value="Avance">Avance</option>
-            <option value="Fortificación">Fortificación</option>
-            <option value="Demolición de muros">Demolición de muros</option>
-            <option value="Otra">Otra</option>
-          </select>
-        </div>
-        <div>
-          <label for="diametro">Diámetro (mm)</label>
-          <select id="diametro">
-            <option value="">Seleccionar...</option>
-            <option value="51">51 (Avance)</option>
-            <option value="45">45 (Fortificación)</option>
-            <option value="64">64 (Avance pesado)</option>
-          </select>
-        </div>
-        <div>
-          <label for="numTaladros">N° taladros</label>
-          <input type="number" id="numTaladros" min="0" step="1" />
-        </div>
-        <div>
-          <label for="profundidadProm">Profundidad promedio (m)</label>
-          <input type="number" id="profundidadProm" min="0" step="0.01" />
+        <div class="actions">
+          <button id="addRowBtn" class="btn-primary">Agregar registro</button>
+          <button id="syncBtn" class="btn-secondary">Sincronizar con base</button>
+          <button id="clearFormBtn" class="btn-dark">Limpiar formulario</button>
+          <button id="downloadPdfBtn" class="btn-warn">Imprimir / PDF</button>
+          <button id="exportCsvBtn" class="btn-dark">Exportar CSV</button>
+          <button id="clearDataBtn" class="btn-danger">Borrar todo</button>
         </div>
 
-        <!-- Desplegable de tipo de barra -->
-        <div>
-          <label for="tipoBarra">Tipo de barra</label>
-          <select id="tipoBarra" name="tipoBarra">
-            <option value="">Seleccionar...</option>
-            <option value="4.30_T38R32">Acero 4,30 m T38R32</option>
-            <option value="3.70_T38R32">Acero 3,70 m T38R32</option>
-            <option value="3.10_T38R32">Acero 3,10 m T38R32</option>
-            <option value="2.70_T38R32">Acero 2,70 m T38R32</option>
-            <option value="1.50_T38T38">MF 1,50 m T38T38</option>
-          </select>
+        <div class="config-box">
+          <strong>Configurar base:</strong> pega tu URL de Apps Script en la constante <code>APPS_SCRIPT_URL</code> dentro del archivo HTML.
+          <br><small>Luego presiona <strong>Sincronizar con base</strong>. Los registros que no hayan sido enviados quedarán marcados como pendientes.</small>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Dashboard operacional</h2>
+        <div class="kpi-grid">
+          <div class="kpi"><div class="t">Metros perforados</div><div class="v" id="kpiMetros">0</div><div class="s">m acumulados</div></div>
+          <div class="kpi"><div class="t">Acero total</div><div class="v" id="kpiAcero">0</div><div class="s">m equivalentes</div></div>
+          <div class="kpi"><div class="t">Consumo bits</div><div class="v" id="kpiBits">0</div><div class="s">unidades estimadas</div></div>
+          <div class="kpi"><div class="t">Consumo barras</div><div class="v" id="kpiBarras">0</div><div class="s">unidades estimadas</div></div>
+          <div class="kpi"><div class="t">Consumo culatines</div><div class="v" id="kpiCulatines">0</div><div class="s">unidades estimadas</div></div>
+          <div class="kpi"><div class="t">Promedio por registro</div><div class="v" id="kpiPromedio">0</div><div class="s">m por carga</div></div>
         </div>
 
-        <div>
-          <label for="largoBarra">Largo barra (m)</label>
-          <input type="number" id="largoBarra" min="0" step="0.01" />
+        <div class="chart-box">
+          <div style="margin-bottom:8px;color:#cbd5e1;font-size:13px;font-weight:700;">Metros perforados por equipo</div>
+          <canvas id="chartCanvas" width="640" height="280"></canvas>
         </div>
-      </div>
-      <br />
-      <button id="addRowBtn">Agregar registro</button>
-      <button id="clearDataBtn">Borrar todo (tabla y memoria)</button>
-      <button id="downloadPdfBtn">Descargar informe en PDF</button>
-      <button id="exportCsvBtn">Exportar datos a CSV</button>
+      </section>
+    </div>
 
-      <p class="small-note">
-        <strong>Supuestos de rendimiento:</strong><br />
-        BIT: 51 mm = 100 m, 45 mm = 80 m, 64 mm = 100 m<br />
-        BARRA: 51 mm = 300 m, 45 mm = 250 m, MF T38 (1,5 m) = 250 m*<br />
-        CULATIN: 51 mm = 350 m, 45 mm = 350 m, 64 mm = 350 m<br />
-        *Ajustar según experiencia / contrato.
-      </p>
-    </section>
-
-    <!-- Dashboard -->
-    <section class="card">
-      <h2>Dashboard de resumen</h2>
-      <div class="dashboard-grid">
-        <div class="kpi-card">
-          <div class="kpi-title">Metros perforados</div>
-          <div class="kpi-value"><span id="kpiMetros">0</span> m</div>
-          <div class="kpi-subtitle">Suma de todos los registros</div>
-        </div>
-
-        <div class="kpi-card">
-          <div class="kpi-title">Acero total</div>
-          <div class="kpi-value"><span id="kpiAcero">0</span> m</div>
-          <div class="kpi-subtitle">Igual a metros perforados</div>
-        </div>
-
-        <div class="kpi-card">
-          <div class="kpi-title">Consumo BIT</div>
-          <div class="kpi-value"><span id="kpiBits">0</span> unid</div>
-          <div class="kpi-subtitle">Total estimado</div>
-        </div>
-
-        <div class="kpi-card">
-          <div class="kpi-title">Consumo BARRA</div>
-          <div class="kpi-value"><span id="kpiBarras">0</span> unid</div>
-          <div class="kpi-subtitle">Incluye MF T38 1,5 m</div>
-        </div>
-
-        <div class="kpi-card">
-          <div class="kpi-title">Consumo CULATIN</div>
-          <div class="kpi-value"><span id="kpiCulatines">0</span> unid</div>
-          <div class="kpi-subtitle">Todos los diámetros</div>
-        </div>
-
-        <div class="kpi-card">
-          <div class="kpi-title">Registros cargados</div>
-          <div class="kpi-value"><span id="kpiRegistros">0</span></div>
-          <div class="kpi-subtitle">Filas en el historial</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Registros históricos -->
-    <section class="card">
+    <section class="card" style="margin-top:18px;">
       <h2>Registros históricos</h2>
-      <table id="regTable">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Fecha</th>
-            <th>Turno</th>
-            <th>Faena / Proyecto</th>
-            <th>Equipo</th>
-            <th>Frente / Sector</th>
-            <th>Tipo perforación</th>
-            <th>Diámetro (mm)</th>
-            <th>N° taladros</th>
-            <th>Prof. prom. (m)</th>
-            <th>Metros perforados (m)</th>
-            <th>Acero total (m)</th>
-            <th>Consumo BIT (unid)</th>
-            <th>Consumo BARRA (unid)</th>
-            <th>Consumo CULATIN (unid)</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Filas dinámicas -->
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colspan="11">TOTALES</td>
-            <td id="totalMetros">0</td>
-            <td id="totalAcero">0</td>
-            <td id="totalBits">0</td>
-            <td id="totalBarras">0</td>
-            <td id="totalCulatines">0</td>
-          </tr>
-        </tfoot>
-      </table>
-      <p class="small-note"></p>
+      <div class="table-wrap">
+        <table id="regTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Estado base</th>
+              <th>Fecha</th>
+              <th>Turno</th>
+              <th>Faena</th>
+              <th>Equipo</th>
+              <th>Operador</th>
+              <th>Frente</th>
+              <th>Tipo</th>
+              <th>Ø</th>
+              <th>Taladros</th>
+              <th>Prof. prom.</th>
+              <th>Metros</th>
+              <th>Acero</th>
+              <th>BIT</th>
+              <th>BARRA</th>
+              <th>CULATÍN</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+          <tfoot>
+            <tr>
+              <td colspan="12"><strong>TOTALES</strong></td>
+              <td id="totalMetros">0</td>
+              <td id="totalAcero">0</td>
+              <td id="totalBits">0</td>
+              <td id="totalBarras">0</td>
+              <td id="totalCulatines">0</td>
+              <td>-</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
     </section>
+
+    <div class="footer">Desarrollado para control de perforación subterránea · Bernardo Ojeda Molina</div>
   </main>
 
-  <footer class="footer">
-    Desarrollado por <strong>Bernardo Ojeda Molina</strong> · Ingeniería &amp; Innovación en Perforación Subterránea
-  </footer>
-
   <script>
-    // Parámetros de rendimiento (m por unidad)
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyTuSH37rM-bISJZMhd1T_cXYFBZ52g1V5alIEGzbeZ22W07XbNS37eP2qSApPP_Ogz/exec";
+
     const parametros = {
-      BIT:   { "51": 100, "45": 80, "64": 100 },
-      BARRA: { "51": 300, "45": 250 },
+      BIT: { "51": 100, "45": 80, "64": 100 },
+      BARRA: { "51": 300, "45": 250, "64": 300 },
       BARRA_MF_T38: 250,
       CULATIN: { "51": 350, "45": 350, "64": 350 }
     };
 
-    const STORAGE_KEY = "registro_perforacion_datos";
-    let editIndex = null; // índice que se está editando (o null si es nuevo)
+    const STORAGE_KEY = "registro_perforacion_pro_datos";
+    let editId = null;
+
+    const barrasConfig = {
+      "4.30_T38R32": 4.30,
+      "3.70_T38R32": 3.70,
+      "3.10_T38R32": 3.10,
+      "2.70_T38R32": 2.70,
+      "1.50_T38T38": 1.50
+    };
+
+    function uid() {
+      return "REG-" + Date.now() + "-" + Math.floor(Math.random() * 100000);
+    }
+
+    function redondear(num, dec = 2) {
+      return Math.round((Number(num) || 0) * Math.pow(10, dec)) / Math.pow(10, dec);
+    }
 
     function cargarDatos() {
-      const data = localStorage.getItem(STORAGE_KEY);
-      return data ? JSON.parse(data) : [];
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      } catch {
+        return [];
+      }
     }
 
     function guardarDatos(registros) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
     }
 
-    function redondear(num, dec = 2) {
-      return Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec);
-    }
-
     function calcularConsumos(diametro, metrosPerforados, largoBarra) {
       const d = String(diametro);
       const rendBit = parametros.BIT[d] || 0;
-
-      // BARRA: por diámetro, pero si es MF T38 1,5 m usamos rendimiento especial
       let rendBarra = parametros.BARRA[d] || 0;
-      if (Math.abs(largoBarra - 1.5) < 0.01 && parametros.BARRA_MF_T38) {
-        rendBarra = parametros.BARRA_MF_T38;
-      }
-
+      if (Math.abs(Number(largoBarra) - 1.5) < 0.01) rendBarra = parametros.BARRA_MF_T38;
       const rendCulatin = parametros.CULATIN[d] || 0;
-
-      const bit = rendBit ? metrosPerforados / rendBit : 0;
-      const barra = rendBarra ? metrosPerforados / rendBarra : 0;
-      const culatin = rendCulatin ? metrosPerforados / rendCulatin : 0;
-
       return {
-        bit: redondear(bit),
-        barra: redondear(barra),
-        culatin: redondear(culatin)
+        bit: rendBit ? redondear(metrosPerforados / rendBit) : 0,
+        barra: rendBarra ? redondear(metrosPerforados / rendBarra) : 0,
+        culatin: rendCulatin ? redondear(metrosPerforados / rendCulatin) : 0,
       };
     }
 
-    function refrescarTabla() {
-      const registros = cargarDatos();
-      const tbody = document.querySelector("#regTable tbody");
-      tbody.innerHTML = "";
+    function estadoBadge(syncStatus) {
+      if (syncStatus === "synced") return '<span class="badge ok">Sincronizado</span>';
+      if (syncStatus === "error") return '<span class="badge error">Error</span>';
+      return '<span class="badge pending">Pendiente</span>';
+    }
 
-      let totalMetros = 0;
-      let totalAcero = 0;
-      let totalBits = 0;
-      let totalBarras = 0;
-      let totalCulatines = 0;
+    function obtenerFormulario() {
+      return {
+        fecha: document.getElementById("fecha").value,
+        turno: document.getElementById("turno").value,
+        faena: document.getElementById("faena").value.trim(),
+        equipo: document.getElementById("equipo").value.trim(),
+        operador: document.getElementById("operador").value.trim(),
+        frente: document.getElementById("frente").value.trim(),
+        tipoPerforacion: document.getElementById("tipoPerforacion").value,
+        diametro: document.getElementById("diametro").value,
+        tipoBarra: document.getElementById("tipoBarra").value,
+        largoBarra: parseFloat(document.getElementById("largoBarra").value || "0"),
+        numTaladros: parseInt(document.getElementById("numTaladros").value || "0", 10),
+        profundidadProm: parseFloat(document.getElementById("profundidadProm").value || "0")
+      };
+    }
 
-      registros.forEach((reg, index) => {
-        const tr = document.createElement("tr");
-
-        const celdas = [
-          index + 1,
-          reg.fecha,
-          reg.turno,
-          reg.faena,
-          reg.equipo,
-          reg.frente,
-          reg.tipoPerforacion,
-          reg.diametro,
-          reg.numTaladros,
-          reg.profundidadProm,
-          reg.metrosPerforados,
-          reg.aceroTotal,
-          reg.consumoBit,
-          reg.consumoBarra,
-          reg.consumoCulatin
-        ];
-
-        celdas.forEach((valor) => {
-          const td = document.createElement("td");
-          td.textContent = valor;
-          tr.appendChild(td);
-        });
-
-        // Celda de acciones (Editar / Eliminar)
-        const accionesTd = document.createElement("td");
-
-        const btnEdit = document.createElement("button");
-        btnEdit.textContent = "Editar";
-        btnEdit.className = "action-btn edit-btn";
-        btnEdit.addEventListener("click", () => iniciarEdicion(index));
-
-        const btnDelete = document.createElement("button");
-        btnDelete.textContent = "Eliminar";
-        btnDelete.className = "action-btn delete-btn";
-        btnDelete.addEventListener("click", () => eliminarRegistro(index));
-
-        accionesTd.appendChild(btnEdit);
-        accionesTd.appendChild(btnDelete);
-        tr.appendChild(accionesTd);
-
-        tbody.appendChild(tr);
-
-        totalMetros   += reg.metrosPerforados;
-        totalAcero    += reg.aceroTotal;
-        totalBits     += reg.consumoBit;
-        totalBarras   += reg.consumoBarra;
-        totalCulatines+= reg.consumoCulatin;
-      });
-
-      document.getElementById("totalMetros").textContent    = redondear(totalMetros);
-      document.getElementById("totalAcero").textContent     = redondear(totalAcero);
-      document.getElementById("totalBits").textContent      = redondear(totalBits);
-      document.getElementById("totalBarras").textContent    = redondear(totalBarras);
-      document.getElementById("totalCulatines").textContent = redondear(totalCulatines);
-
-      // Dashboard
-      if (document.getElementById("kpiMetros")) {
-        document.getElementById("kpiMetros").textContent    = redondear(totalMetros);
-        document.getElementById("kpiAcero").textContent     = redondear(totalAcero);
-        document.getElementById("kpiBits").textContent      = redondear(totalBits);
-        document.getElementById("kpiBarras").textContent    = redondear(totalBarras);
-        document.getElementById("kpiCulatines").textContent = redondear(totalCulatines);
-        document.getElementById("kpiRegistros").textContent = registros.length;
+    function validarFormulario(d) {
+      if (!d.fecha || !d.turno || !d.faena || !d.equipo || !d.frente || !d.tipoPerforacion || !d.diametro) {
+        alert("Completa Fecha, Turno, Faena, Equipo, Frente, Tipo de perforación y Diámetro.");
+        return false;
       }
+      if (d.numTaladros <= 0 || d.profundidadProm <= 0) {
+        alert("N° taladros y profundidad promedio deben ser mayores a 0.");
+        return false;
+      }
+      return true;
+    }
+
+    function limpiarFormulario() {
+      ["fecha","turno","faena","equipo","operador","frente","tipoPerforacion","diametro","tipoBarra","largoBarra","numTaladros","profundidadProm"].forEach(id => {
+        document.getElementById(id).value = "";
+      });
+      editId = null;
+      document.getElementById("addRowBtn").textContent = "Agregar registro";
     }
 
     function agregarRegistro() {
-      const fecha = document.getElementById("fecha").value;
-      const turno = document.getElementById("turno").value;
-      const faena = document.getElementById("faena").value.trim();
-      const equipo = document.getElementById("equipo").value.trim();
-      const frente = document.getElementById("frente").value.trim();
-      const tipoPerforacion = document.getElementById("tipoPerforacion").value;
-      const diametro = document.getElementById("diametro").value;
-      const numTaladros = parseInt(document.getElementById("numTaladros").value || "0", 10);
-      const profundidadProm = parseFloat(document.getElementById("profundidadProm").value || "0");
-      const largoBarra = parseFloat(document.getElementById("largoBarra").value || "0");
+      const d = obtenerFormulario();
+      if (!validarFormulario(d)) return;
 
-      if (!fecha || !turno || !faena || !equipo || !frente || !tipoPerforacion || !diametro) {
-        alert("Por favor completa al menos: Fecha, Turno, Faena, Equipo, Frente, Tipo de perforación y Diámetro.");
-        return;
-      }
-      if (numTaladros <= 0 || profundidadProm <= 0) {
-        alert("N° taladros y profundidad promedio deben ser mayores a 0.");
-        return;
-      }
-
-      const metrosPerforados = numTaladros * profundidadProm;
+      const metrosPerforados = redondear(d.numTaladros * d.profundidadProm);
       const aceroTotal = metrosPerforados;
-      const consumos = calcularConsumos(diametro, metrosPerforados, largoBarra);
-
-      const nuevoReg = {
-        fecha,
-        turno,
-        faena,
-        equipo,
-        frente,
-        tipoPerforacion,
-        diametro: parseInt(diametro, 10),
-        numTaladros,
-        profundidadProm: redondear(profundidadProm),
-        largoBarra: redondear(largoBarra),
-        metrosPerforados: redondear(metrosPerforados),
-        aceroTotal: redondear(aceroTotal),
-        consumoBit: consumos.bit,
-        consumoBarra: consumos.barra,
-        consumoCulatin: consumos.culatin
-      };
-
+      const consumos = calcularConsumos(d.diametro, metrosPerforados, d.largoBarra);
       const registros = cargarDatos();
 
-      if (editIndex === null) {
-        // Nuevo registro
-        registros.push(nuevoReg);
+      const regBase = {
+        fecha: d.fecha,
+        turno: d.turno,
+        faena: d.faena,
+        equipo: d.equipo,
+        operador: d.operador,
+        frente: d.frente,
+        tipoPerforacion: d.tipoPerforacion,
+        diametro: parseInt(d.diametro, 10),
+        tipoBarra: d.tipoBarra,
+        largoBarra: redondear(d.largoBarra),
+        numTaladros: d.numTaladros,
+        profundidadProm: redondear(d.profundidadProm),
+        metrosPerforados,
+        aceroTotal,
+        consumoBit: consumos.bit,
+        consumoBarra: consumos.barra,
+        consumoCulatin: consumos.culatin,
+        updatedAt: new Date().toISOString(),
+        syncStatus: "pending"
+      };
+
+      if (editId) {
+        const idx = registros.findIndex(r => r.id === editId);
+        if (idx >= 0) {
+          registros[idx] = { ...registros[idx], ...regBase, action: "upsert" };
+        }
       } else {
-        // Actualizar registro existente
-        registros[editIndex] = nuevoReg;
-        editIndex = null;
-        document.getElementById("addRowBtn").textContent = "Agregar registro";
+        registros.push({ id: uid(), createdAt: new Date().toISOString(), action: "upsert", ...regBase });
       }
 
       guardarDatos(registros);
-      refrescarTabla();
-
-      document.getElementById("numTaladros").value = "";
-      document.getElementById("profundidadProm").value = "";
+      refrescarTodo();
+      limpiarFormulario();
     }
 
-    function iniciarEdicion(index) {
-      const registros = cargarDatos();
-      const reg = registros[index];
+    function iniciarEdicion(id) {
+      const reg = cargarDatos().find(r => r.id === id);
       if (!reg) return;
-
-      document.getElementById("fecha").value            = reg.fecha;
-      document.getElementById("turno").value            = reg.turno;
-      document.getElementById("faena").value            = reg.faena;
-      document.getElementById("equipo").value           = reg.equipo;
-      document.getElementById("frente").value           = reg.frente;
-      document.getElementById("tipoPerforacion").value  = reg.tipoPerforacion;
-      document.getElementById("diametro").value         = reg.diametro;
-      document.getElementById("numTaladros").value      = reg.numTaladros;
-      document.getElementById("profundidadProm").value  = reg.profundidadProm;
-      document.getElementById("largoBarra").value       = reg.largoBarra;
-
-      editIndex = index;
+      document.getElementById("fecha").value = reg.fecha || "";
+      document.getElementById("turno").value = reg.turno || "";
+      document.getElementById("faena").value = reg.faena || "";
+      document.getElementById("equipo").value = reg.equipo || "";
+      document.getElementById("operador").value = reg.operador || "";
+      document.getElementById("frente").value = reg.frente || "";
+      document.getElementById("tipoPerforacion").value = reg.tipoPerforacion || "";
+      document.getElementById("diametro").value = reg.diametro || "";
+      document.getElementById("tipoBarra").value = reg.tipoBarra || "";
+      document.getElementById("largoBarra").value = reg.largoBarra || "";
+      document.getElementById("numTaladros").value = reg.numTaladros || "";
+      document.getElementById("profundidadProm").value = reg.profundidadProm || "";
+      editId = id;
       document.getElementById("addRowBtn").textContent = "Guardar cambios";
-
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    function eliminarRegistro(index) {
+    function eliminarRegistro(id) {
       const registros = cargarDatos();
-      if (index < 0 || index >= registros.length) return;
+      const idx = registros.findIndex(r => r.id === id);
+      if (idx < 0) return;
       if (!confirm("¿Deseas eliminar este registro?")) return;
 
-      registros.splice(index, 1);
-      guardarDatos(registros);
-
-      // Si estabas editando este registro, resetea el modo edición
-      editIndex = null;
-      document.getElementById("addRowBtn").textContent = "Agregar registro";
-
-      refrescarTabla();
-    }
-
-    function limpiarTodo() {
-      if (confirm("¿Seguro que deseas borrar todos los registros guardados?")) {
-        localStorage.removeItem(STORAGE_KEY);
-        editIndex = null;
-        document.getElementById("addRowBtn").textContent = "Agregar registro";
-        refrescarTabla();
+      if (registros[idx].syncStatus === "synced") {
+        registros[idx] = { ...registros[idx], action: "delete", syncStatus: "pending", updatedAt: new Date().toISOString() };
+      } else {
+        registros.splice(idx, 1);
       }
+
+      if (editId === id) limpiarFormulario();
+      guardarDatos(registros);
+      refrescarTodo();
     }
 
-    function descargarPDF() {
-      window.print();
+    function borrarTodo() {
+      if (!confirm("¿Seguro que deseas borrar todos los registros locales?")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      limpiarFormulario();
+      refrescarTodo();
     }
 
     function exportarCSV() {
+      const registros = cargarDatos().filter(r => r.action !== "delete");
+      if (!registros.length) return alert("No hay registros para exportar.");
+      const headers = ["ID","Fecha","Turno","Faena","Equipo","Operador","Frente","Tipo","Diametro","TipoBarra","LargoBarra","NumTaladros","ProfundidadProm","MetrosPerforados","AceroTotal","ConsumoBit","ConsumoBarra","ConsumoCulatin","EstadoBase"];
+      let csv = headers.join(";") + "\n";
+      registros.forEach(r => {
+        csv += [r.id,r.fecha,r.turno,r.faena,r.equipo,r.operador,r.frente,r.tipoPerforacion,r.diametro,r.tipoBarra,r.largoBarra,r.numTaladros,r.profundidadProm,r.metrosPerforados,r.aceroTotal,r.consumoBit,r.consumoBarra,r.consumoCulatin,r.syncStatus].join(";") + "\n";
+      });
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "registro_perforacion_pro.csv";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    async function enviarRegistroABase(registro) {
+      const payload = { ...registro };
+      const resp = await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      });
+      return resp.json();
+    }
+
+    async function sincronizarPendientes() {
       const registros = cargarDatos();
-      if (!registros.length) {
-        alert("No hay registros para exportar.");
+      const pendientes = registros.filter(r => r.syncStatus !== "synced" || r.action === "delete");
+      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes("PEGAR_AQUI")) {
+        document.getElementById("statusBase").textContent = "Sin configurar";
+        return alert("Primero debes pegar tu URL de Google Apps Script en APPS_SCRIPT_URL.");
+      }
+      if (!pendientes.length) {
+        document.getElementById("statusBase").textContent = "Al día";
+        return alert("No hay registros pendientes por sincronizar.");
+      }
+
+      document.getElementById("statusBase").textContent = "Sincronizando...";
+
+      for (let i = 0; i < registros.length; i++) {
+        const r = registros[i];
+        if (r.syncStatus === "synced" && r.action !== "delete") continue;
+        try {
+          const result = await enviarRegistroABase(r);
+          if (result && result.result === "success") {
+            if (r.action === "delete") {
+              registros.splice(i, 1);
+              i--;
+            } else {
+              registros[i].syncStatus = "synced";
+              registros[i].lastSyncAt = new Date().toISOString();
+            }
+          } else {
+            registros[i].syncStatus = "error";
+          }
+        } catch (e) {
+          registros[i].syncStatus = "error";
+        }
+        guardarDatos(registros);
+        refrescarTodo();
+      }
+
+      const siguenPendientes = cargarDatos().some(r => r.syncStatus !== "synced" || r.action === "delete");
+      document.getElementById("statusBase").textContent = siguenPendientes ? "Con errores" : "Al día";
+      if (!siguenPendientes) alert("Sincronización completada correctamente.");
+    }
+
+    function refrescarTabla() {
+      const tbody = document.querySelector("#regTable tbody");
+      const registros = cargarDatos().filter(r => r.action !== "delete");
+      tbody.innerHTML = "";
+
+      let totalMetros = 0, totalAcero = 0, totalBits = 0, totalBarras = 0, totalCulatines = 0;
+      registros.forEach((reg, idx) => {
+        totalMetros += Number(reg.metrosPerforados || 0);
+        totalAcero += Number(reg.aceroTotal || 0);
+        totalBits += Number(reg.consumoBit || 0);
+        totalBarras += Number(reg.consumoBarra || 0);
+        totalCulatines += Number(reg.consumoCulatin || 0);
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${idx + 1}</td>
+          <td>${estadoBadge(reg.syncStatus)}</td>
+          <td>${reg.fecha || ""}</td>
+          <td>${reg.turno || ""}</td>
+          <td>${reg.faena || ""}</td>
+          <td>${reg.equipo || ""}</td>
+          <td>${reg.operador || ""}</td>
+          <td>${reg.frente || ""}</td>
+          <td>${reg.tipoPerforacion || ""}</td>
+          <td>${reg.diametro || ""}</td>
+          <td>${reg.numTaladros || 0}</td>
+          <td>${reg.profundidadProm || 0}</td>
+          <td>${reg.metrosPerforados || 0}</td>
+          <td>${reg.aceroTotal || 0}</td>
+          <td>${reg.consumoBit || 0}</td>
+          <td>${reg.consumoBarra || 0}</td>
+          <td>${reg.consumoCulatin || 0}</td>
+          <td>
+            <button class="mini-btn btn-warn" onclick="iniciarEdicion('${reg.id}')">Editar</button>
+            <button class="mini-btn btn-danger" onclick="eliminarRegistro('${reg.id}')">Eliminar</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById("totalMetros").textContent = redondear(totalMetros);
+      document.getElementById("totalAcero").textContent = redondear(totalAcero);
+      document.getElementById("totalBits").textContent = redondear(totalBits);
+      document.getElementById("totalBarras").textContent = redondear(totalBarras);
+      document.getElementById("totalCulatines").textContent = redondear(totalCulatines);
+
+      document.getElementById("kpiMetros").textContent = redondear(totalMetros);
+      document.getElementById("kpiAcero").textContent = redondear(totalAcero);
+      document.getElementById("kpiBits").textContent = redondear(totalBits);
+      document.getElementById("kpiBarras").textContent = redondear(totalBarras);
+      document.getElementById("kpiCulatines").textContent = redondear(totalCulatines);
+      document.getElementById("kpiPromedio").textContent = registros.length ? redondear(totalMetros / registros.length) : 0;
+
+      const pendientes = cargarDatos().filter(r => r.syncStatus !== "synced" || r.action === "delete").length;
+      document.getElementById("statusLocalCount").textContent = registros.length;
+      document.getElementById("statusPendingCount").textContent = pendientes;
+    }
+
+    function dibujarGrafico() {
+      const canvas = document.getElementById("chartCanvas");
+      const ctx = canvas.getContext("2d");
+      const width = canvas.width;
+      const height = canvas.height;
+      ctx.clearRect(0, 0, width, height);
+
+      const registros = cargarDatos().filter(r => r.action !== "delete");
+      const porEquipo = {};
+      registros.forEach(r => {
+        porEquipo[r.equipo] = (porEquipo[r.equipo] || 0) + Number(r.metrosPerforados || 0);
+      });
+      const entries = Object.entries(porEquipo);
+      if (!entries.length) {
+        ctx.fillStyle = "#94a3b8";
+        ctx.font = "14px Arial";
+        ctx.fillText("Sin datos para graficar", 20, 40);
         return;
       }
 
-      const headers = [
-        "Fecha","Turno","Faena","Equipo","Frente",
-        "TipoPerforacion","Diametro","NumTaladros",
-        "ProfundidadProm","LargoBarra","MetrosPerforados",
-        "AceroTotal","ConsumoBit","ConsumoBarra","ConsumoCulatin"
-      ];
+      const max = Math.max(...entries.map(e => e[1]), 1);
+      const left = 70, right = 20, top = 20, bottom = 60;
+      const plotW = width - left - right;
+      const plotH = height - top - bottom;
+      const barW = Math.max(34, plotW / entries.length * 0.55);
+      const gap = plotW / entries.length;
 
-      const filas = registros.map(reg => [
-        reg.fecha,
-        reg.turno,
-        reg.faena,
-        reg.equipo,
-        reg.frente,
-        reg.tipoPerforacion,
-        reg.diametro,
-        reg.numTaladros,
-        reg.profundidadProm,
-        reg.largoBarra,
-        reg.metrosPerforados,
-        reg.aceroTotal,
-        reg.consumoBit,
-        reg.consumoBarra,
-        reg.consumoCulatin
-      ]);
+      ctx.strokeStyle = "rgba(255,255,255,.12)";
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 5; i++) {
+        const y = top + (plotH / 5) * i;
+        ctx.beginPath();
+        ctx.moveTo(left, y);
+        ctx.lineTo(width - right, y);
+        ctx.stroke();
+      }
 
-      let csvContenido = headers.join(";") + "\n";
-      filas.forEach(fila => {
-        csvContenido += fila.join(";") + "\n";
+      ctx.fillStyle = "#cbd5e1";
+      ctx.font = "12px Arial";
+      for (let i = 0; i <= 5; i++) {
+        const val = redondear(max - (max / 5) * i, 0);
+        const y = top + (plotH / 5) * i + 4;
+        ctx.fillText(String(val), 18, y);
+      }
+
+      entries.forEach((entry, i) => {
+        const [equipo, metros] = entry;
+        const h = (metros / max) * plotH;
+        const x = left + i * gap + (gap - barW) / 2;
+        const y = top + plotH - h;
+
+        const grd = ctx.createLinearGradient(0, y, 0, y + h);
+        grd.addColorStop(0, "#38bdf8");
+        grd.addColorStop(1, "#22c55e");
+        ctx.fillStyle = grd;
+        ctx.fillRect(x, y, barW, h);
+
+        ctx.fillStyle = "#e5e7eb";
+        ctx.font = "bold 12px Arial";
+        ctx.fillText(String(redondear(metros)), x + 4, y - 8);
+
+        ctx.save();
+        ctx.translate(x + barW / 2, height - 10);
+        ctx.rotate(-0.35);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "#cbd5e1";
+        ctx.font = "11px Arial";
+        ctx.fillText(equipo, 0, 0);
+        ctx.restore();
       });
+    }
 
-      const blob = new Blob([csvContenido], { type: "text/csv;charset=utf-8;" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "registro_perforacion.csv";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+    function refrescarTodo() {
+      refrescarTabla();
+      dibujarGrafico();
     }
 
     document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("addRowBtn").addEventListener("click", agregarRegistro);
-      document.getElementById("clearDataBtn").addEventListener("click", limpiarTodo);
-      document.getElementById("downloadPdfBtn").addEventListener("click", descargarPDF);
+      document.getElementById("syncBtn").addEventListener("click", sincronizarPendientes);
+      document.getElementById("clearFormBtn").addEventListener("click", limpiarFormulario);
+      document.getElementById("clearDataBtn").addEventListener("click", borrarTodo);
+      document.getElementById("downloadPdfBtn").addEventListener("click", () => window.print());
       document.getElementById("exportCsvBtn").addEventListener("click", exportarCSV);
-
-      // configuración de barras para autocompletar largoBarra
-      const barrasConfig = {
-        "4.30_T38R32": 4.30,
-        "3.70_T38R32": 3.70,
-        "3.10_T38R32": 3.10,
-        "2.70_T38R32": 2.70,
-        "1.50_T38T38": 1.50
-      };
-
-      const tipoBarraSelect = document.getElementById("tipoBarra");
-      const largoBarraInput = document.getElementById("largoBarra");
-
-      if (tipoBarraSelect && largoBarraInput) {
-        tipoBarraSelect.addEventListener("change", function () {
-          const largo = barrasConfig[this.value];
-          if (largo) {
-            largoBarraInput.value = largo;
-          } else {
-            largoBarraInput.value = "";
-          }
-        });
-      }
-
-      refrescarTabla();
+      document.getElementById("tipoBarra").addEventListener("change", function() {
+        document.getElementById("largoBarra").value = barrasConfig[this.value] || "";
+      });
+      refrescarTodo();
     });
   </script>
 </body>
