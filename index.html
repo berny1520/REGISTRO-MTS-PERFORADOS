@@ -82,6 +82,10 @@
         <label>URL de Google Apps Script</label>
         <input id="appsScriptUrl" placeholder="https://script.google.com/macros/s/AKfycbzbjTBfdFRzPOsMWRbPga4se3tVe2TQWaKHF9otS3MsfjtGNrq1d5d4Ix8o9SU8aUix/exec">
       </div>
+      <div>
+        <label>Horas históricas por defecto</label>
+        <input type="number" step="0.01" id="defaultHorasHistoricas" value="8">
+      </div>
     </div>
     <div class="btnrow">
       <button class="btn6" id="saveConfigBtn">Guardar URL</button>
@@ -189,7 +193,7 @@
       <h2 class="section-title">Resumen operacional</h2>
       <div id="resumen" class="small"></div>
       <hr style="border-color:#334155;border-style:solid;border-width:1px 0 0;margin:16px 0">
-      <div class="small muted">Formato de hoja esperado en Google Sheets: ID, ACTION, CREATED_AT, UPDATED_AT, SYNCED_AT, FECHA, TURNO, FAENA, EQUIPO, OPERADOR, FRENTE, TIPO_PERFORACION, DIAMETRO, TIPO_BARRA, LARGO_BARRA, NUM_TALADROS, PROFUNDIDAD_PROM, HORAS_PERFORACION, METROS_PERFORADOS, ACERO_TOTAL, CONSUMO_BIT, CONSUMO_BARRA, CONSUMO_CULATIN, MPH, ACERO_POR_METRO, OBSERVACION.</div>
+      <div class="small muted">Formato de hoja esperado en Google Sheets: ID, ACTION, CREATED_AT, UPDATED_AT, SYNCED_AT, FECHA, TURNO, FAENA, EQUIPO, OPERADOR, FRENTE, TIPO_PERFORACION, DIAMETRO, TIPO_BARRA, LARGO_BARRA, NUM_TALADROS, PROFUNDIDAD_PROM, HORAS_PERFORACION, METROS_PERFORADOS, ACERO_TOTAL, CONSUMO_BIT, CONSUMO_BARRA, CONSUMO_CULATIN, MPH, ACERO_POR_METRO, OBSERVACION. Si faltan horas en históricos, el dashboard usa las horas históricas por defecto para estimar m/h.</div>
     </div>
   </section>
 </main>
@@ -198,14 +202,29 @@ const STORAGE_KEY = 'dashboard_perforacion_full_v1';
 const CONFIG_KEY = 'dashboard_perforacion_full_config';
 const LEGACY_KEYS = ['registro_perforacion_datos','registro_perforacion_pro_datos','registro_perforacion_dashboard_avanzado_v2'];
 const parametros = { BIT:{'45':80,'51':100,'64':100}, BARRA:{'45':250,'51':300,'64':300}, CULATIN:{'45':350,'51':350,'64':350}, BARRA_MF_T38:250 };
+const DEFAULT_HORAS_HISTORICAS = 8;
 let editId = null;
 
 function uid(){ return `REG-${Date.now()}-${Math.floor(Math.random()*100000)}`; }
 function round(n,d=2){ n=Number(n||0); return Math.round(n*Math.pow(10,d))/Math.pow(10,d); }
 function escHtml(s){ return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 function config(){ try{return JSON.parse(localStorage.getItem(CONFIG_KEY)||'{}');}catch{return {};} }
-function saveConfig(){ const cfg = { appsScriptUrl: document.getElementById('appsScriptUrl').value.trim() }; localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg)); alert('Configuración guardada.'); }
+function saveConfig(){
+  const prev = config();
+  const cfg = {
+    ...prev,
+    appsScriptUrl: document.getElementById('appsScriptUrl').value.trim(),
+    defaultHorasHistoricas: Number(document.getElementById('defaultHorasHistoricas').value || DEFAULT_HORAS_HISTORICAS)
+  };
+  localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
+  alert('Configuración guardada.');
+  render();
+}
 function getAppsScriptUrl(){ return (config().appsScriptUrl || '').trim(); }
+function getDefaultHorasHistoricas(){
+  const v = Number(config().defaultHorasHistoricas || DEFAULT_HORAS_HISTORICAS);
+  return v > 0 ? v : DEFAULT_HORAS_HISTORICAS;
+}
 function getStore(){ try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');}catch{return [];} }
 function setStore(rows){ localStorage.setItem(STORAGE_KEY, JSON.stringify(rows)); }
 function uniqueSortedValues(rows,key){
@@ -269,7 +288,11 @@ function normalize(r){
   reg.metrosPerforados = Number(reg.metrosPerforados || reg.aceroTotal || (reg.numTaladros * reg.profundidadProm) || 0);
   reg.aceroTotal = Number(reg.aceroTotal || reg.metrosPerforados || 0);
   if(reg.consumoBit == null || reg.consumoBarra == null || reg.consumoCulatin == null){ Object.assign(reg, calcConsumos(reg.diametro, reg.metrosPerforados, reg.largoBarra, reg.tipoBarra)); }
-  reg.mph = reg.horasPerforacion > 0 ? round(reg.metrosPerforados / reg.horasPerforacion) : Number(reg.mph || 0);
+  const mphDirecto = Number(reg.mph || 0);
+  const horasFallback = (!reg.horasPerforacion && reg.metrosPerforados > 0) ? getDefaultHorasHistoricas() : 0;
+  reg.horasPerforacionUsadas = reg.horasPerforacion > 0 ? reg.horasPerforacion : horasFallback;
+  reg.mph = reg.horasPerforacionUsadas > 0 ? round(reg.metrosPerforados / reg.horasPerforacionUsadas) : mphDirecto;
+  reg.mphEstimado = reg.horasPerforacion <= 0 && reg.metrosPerforados > 0 && reg.horasPerforacionUsadas > 0;
   reg.aceroPorMetro = reg.metrosPerforados > 0 ? round(reg.aceroTotal / reg.metrosPerforados, 3) : Number(reg.aceroPorMetro || 0);
   reg.observacion = fixEncoding(reg.observacion || '');
   reg.syncStatus = reg.syncStatus || 'pendiente';
@@ -427,7 +450,7 @@ function renderKpis(rows){
 }
 function renderTable(rows){
   const tbody = document.getElementById('tbody');
-  tbody.innerHTML = rows.slice().sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha))).map(r=>`<tr><td>${prettyDate(r.fecha)}</td><td>${escHtml(r.turno)}</td><td>${escHtml(r.faena)}</td><td>${escHtml(r.equipo)}</td><td>${escHtml(r.operador)}</td><td>${escHtml(r.frente)}</td><td>${escHtml(r.tipoPerforacion)}</td><td>${round(r.metrosPerforados)}</td><td>${r.mph||''}</td><td>${r.aceroPorMetro||''}</td><td><span class="tag ${r.syncStatus==='sincronizado'?'ok':r.syncStatus==='error'?'err':'pend'}">${escHtml(r.syncStatus||'pendiente')}</span></td><td><button onclick="editRecord('${r.id}')">Editar</button> <button onclick="delRecord('${r.id}')">Eliminar</button></td></tr>`).join('');
+  tbody.innerHTML = rows.slice().sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha))).map(r=>`<tr><td>${prettyDate(r.fecha)}</td><td>${escHtml(r.turno)}</td><td>${escHtml(r.faena)}</td><td>${escHtml(r.equipo)}</td><td>${escHtml(r.operador)}</td><td>${escHtml(r.frente)}</td><td>${escHtml(r.tipoPerforacion)}</td><td>${round(r.metrosPerforados)}</td><td>${r.mph ? `${r.mph}${r.mphEstimado ? ' *' : ''}` : ''}</td><td>${r.aceroPorMetro||''}</td><td><span class="tag ${r.syncStatus==='sincronizado'?'ok':r.syncStatus==='error'?'err':'pend'}">${escHtml(r.syncStatus||'pendiente')}</span></td><td><button onclick="editRecord('${r.id}')">Editar</button> <button onclick="delRecord('${r.id}')">Eliminar</button></td></tr>`).join('');
 }
 function renderResumen(rows){ const porFaena=sumBy(rows,'faena').slice(0,5); const porEquipo=sumBy(rows,'equipo').slice(0,5); const porOperador=sumBy(rows,'operador').slice(0,5); document.getElementById('resumen').innerHTML = `<b>Top faenas</b><br>${porFaena.map(([k,v],i)=>`${i+1}. ${escHtml(k)}: <b>${round(v)} m</b>`).join('<br>') || 'Sin datos'}<br><br><b>Top equipos</b><br>${porEquipo.map(([k,v],i)=>`${i+1}. ${escHtml(k)}: <b>${round(v)} m</b>`).join('<br>') || 'Sin datos'}<br><br><b>Top operadores</b><br>${porOperador.map(([k,v],i)=>`${i+1}. ${escHtml(k)}: <b>${round(v)} m</b>`).join('<br>') || 'Sin datos'}`; }
 function drawBarChart(canvasId, data, opts={}){
@@ -508,6 +531,7 @@ function syncBarraDropdowns(){
 document.addEventListener('DOMContentLoaded',()=>{
   migrateLegacy();
   document.getElementById('appsScriptUrl').value = getAppsScriptUrl();
+  const dhh = document.getElementById('defaultHorasHistoricas'); if(dhh) dhh.value = getDefaultHorasHistoricas();
   document.getElementById('saveConfigBtn').addEventListener('click', saveConfig);
   document.getElementById('loadBaseBtn').addEventListener('click', loadFromBase);
   document.getElementById('saveBtn').addEventListener('click', saveRecord);
