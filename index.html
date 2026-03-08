@@ -3,805 +3,494 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Registro de Perforación PRO</title>
+  <title>Dashboard de Perforación Full</title>
   <style>
-    :root {
-      --bg: #0f172a;
-      --panel: #111827;
-      --panel-2: #1f2937;
-      --soft: #334155;
-      --line: #243244;
-      --text: #e5e7eb;
-      --muted: #94a3b8;
-      --accent: #22c55e;
-      --accent-2: #38bdf8;
-      --warn: #f59e0b;
-      --danger: #ef4444;
-      --violet: #8b5cf6;
-      --white: #ffffff;
-      --shadow: 0 10px 30px rgba(0,0,0,.28);
-      --radius: 16px;
+    :root{
+      --bg:#0f172a;--panel:#111827;--panel2:#1f2937;--line:#334155;--text:#e5e7eb;--muted:#94a3b8;
+      --accent:#22c55e;--accent2:#38bdf8;--warn:#f59e0b;--danger:#ef4444;--white:#fff;
     }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#0b1220,#111827);color:var(--text)}
+    header{padding:18px 22px;border-bottom:1px solid var(--line);background:rgba(0,0,0,.15);position:sticky;top:0;z-index:20;backdrop-filter:blur(8px)}
+    .header-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:space-between}
+    .brand-left{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+    .logo{width:52px;height:52px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0ea5e9,#22c55e);font-weight:800;color:#fff;font-size:20px;box-shadow:0 10px 24px rgba(0,0,0,.25)}
+    .xtreme-logo{display:flex;align-items:center;gap:10px;padding:8px 14px;border:1px solid #274060;border-radius:14px;background:linear-gradient(135deg,rgba(14,165,233,.12),rgba(34,197,94,.12));box-shadow:0 10px 24px rgba(0,0,0,.15)}
+    .xtreme-mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#22c55e,#38bdf8);display:flex;align-items:center;justify-content:center;font-weight:900;color:#08111f}
+    .xtreme-text{display:flex;flex-direction:column;line-height:1}
+    .xtreme-text b{font-size:18px;letter-spacing:.08em}
+    .xtreme-text span{font-size:11px;color:var(--muted);letter-spacing:.14em}
+    h1{margin:0;font-size:24px}.sub{color:var(--muted);font-size:13px;margin-top:4px}
+    main{max-width:1500px;margin:0 auto;padding:18px}.grid{display:grid;gap:16px}
+    .card{background:rgba(17,24,39,.96);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.15)}
+    .section-title{margin:0 0 12px;font-size:16px}
+    .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+    .filter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;align-items:end}
+    label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:700}
+    input,select,textarea{width:100%;padding:9px 10px;border-radius:9px;border:1px solid #475569;background:#0b1220;color:var(--text)}
+    textarea{min-height:42px;resize:vertical}
+    button{border:none;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
+    .btn{background:#2563eb;color:#fff}.btn2{background:#16a34a;color:#fff}.btn3{background:#475569;color:#fff}.btn4{background:#dc2626;color:#fff}.btn5{background:#0ea5e9;color:#fff}.btn6{background:#7c3aed;color:#fff}
+    .btnrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+    .kpi{background:linear-gradient(180deg,#111827,#0b1220);border:1px solid var(--line);border-radius:12px;padding:14px}
+    .kpi .t{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}.kpi .v{font-size:28px;font-weight:800;margin:6px 0 2px}.kpi .s{font-size:12px;color:var(--muted)}
+    .charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px}.chart-wrap{background:#0b1220;border:1px solid var(--line);border-radius:12px;padding:12px} canvas{width:100%;height:300px;background:#0b1220;border-radius:10px}
+    table{width:100%;border-collapse:collapse;font-size:12px} th,td{padding:8px;border-bottom:1px solid #263244;text-align:left;vertical-align:top} th{position:sticky;top:64px;background:#0f172a;z-index:1}
+    .tag{display:inline-block;padding:3px 8px;border-radius:999px;font-size:11px;font-weight:700}.ok{background:rgba(34,197,94,.18);color:#86efac}.pend{background:rgba(245,158,11,.18);color:#fcd34d}.err{background:rgba(239,68,68,.18);color:#fca5a5}
+    .scroll{max-height:520px;overflow:auto;border:1px solid var(--line);border-radius:12px}.small{font-size:11px;color:var(--muted)}.split{display:grid;grid-template-columns:1.35fr .65fr;gap:16px} .muted{color:var(--muted)}
+    
+    details.panel-toggle{background:rgba(17,24,39,.96);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.15)}
+    details.panel-toggle > summary{list-style:none;cursor:pointer;padding:16px 18px;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    details.panel-toggle > summary::-webkit-details-marker{display:none}
+    details.panel-toggle > summary .summary-note{font-size:12px;font-weight:600;color:var(--muted)}
+    details.panel-toggle > summary::after{content:'Mostrar';font-size:12px;color:#cbd5e1;background:#0b1220;border:1px solid #334155;border-radius:999px;padding:6px 10px}
+    details.panel-toggle[open] > summary::after{content:'Ocultar'}
+    details.panel-toggle .details-content{padding:0 16px 16px}
+    .date-input{color-scheme:dark}
 
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(180deg, #0b1220 0%, #111827 100%);
-      color: var(--text);
-    }
-    header {
-      background: linear-gradient(135deg, #0f172a, #111827 55%, #0b3b2e);
-      border-bottom: 1px solid rgba(255,255,255,.08);
-      box-shadow: var(--shadow);
-    }
-    .wrap {
-      max-width: 1380px;
-      margin: 0 auto;
-      padding: 0 18px;
-    }
-    .hero {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      padding: 20px 0;
-    }
-    .logo {
-      width: 70px;
-      height: 70px;
-      border-radius: 14px;
-      display: grid;
-      place-items: center;
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.08);
-      font-weight: 700;
-      color: #bbf7d0;
-      font-size: 18px;
-    }
-    .hero h1 {
-      margin: 0;
-      font-size: 28px;
-      line-height: 1.15;
-    }
-    .hero p {
-      margin: 6px 0 0;
-      color: #cbd5e1;
-      font-size: 14px;
-    }
-
-    main { padding: 22px 0 40px; }
-    .grid-main {
-      display: grid;
-      grid-template-columns: 1.15fr 1fr;
-      gap: 18px;
-    }
-    .card {
-      background: rgba(17,24,39,.96);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: var(--radius);
-      padding: 18px;
-      box-shadow: var(--shadow);
-    }
-    .card h2 {
-      margin: 0 0 12px;
-      font-size: 18px;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-      padding-bottom: 10px;
-    }
-    .subnote {
-      color: var(--muted);
-      font-size: 12px;
-      margin: 0 0 14px;
-      line-height: 1.45;
-    }
-
-    .status-bar {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-    .status-pill {
-      padding: 12px 14px;
-      border-radius: 14px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.06);
-    }
-    .status-pill strong {
-      display: block;
-      font-size: 20px;
-      margin-top: 4px;
-    }
-    .status-pill small { color: var(--muted); }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
-      gap: 12px 14px;
-    }
-    .field label {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 12px;
-      color: #cbd5e1;
-      font-weight: 700;
-      letter-spacing: .2px;
-    }
-    input, select {
-      width: 100%;
-      padding: 11px 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: #0b1220;
-      color: var(--text);
-      font-size: 14px;
-    }
-    input:focus, select:focus {
-      outline: none;
-      border-color: var(--accent-2);
-      box-shadow: 0 0 0 3px rgba(56,189,248,.18);
-    }
-
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 16px;
-    }
-    button {
-      border: 0;
-      border-radius: 12px;
-      padding: 11px 16px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: .15s ease;
-    }
-    button:hover { transform: translateY(-1px); filter: brightness(1.05); }
-    .btn-primary { background: var(--accent); color: #062b17; }
-    .btn-secondary { background: #1d4ed8; color: white; }
-    .btn-dark { background: #334155; color: white; }
-    .btn-warn { background: var(--warn); color: #291700; }
-    .btn-danger { background: var(--danger); color: white; }
-
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(6, minmax(0,1fr));
-      gap: 12px;
-      margin-top: 18px;
-    }
-    .kpi {
-      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
-      border: 1px solid rgba(255,255,255,.08);
-      padding: 14px;
-      border-radius: 14px;
-      min-height: 90px;
-    }
-    .kpi .t { color: var(--muted); font-size: 12px; text-transform: uppercase; }
-    .kpi .v { font-size: 24px; font-weight: 700; margin-top: 8px; }
-    .kpi .s { color: #cbd5e1; font-size: 12px; margin-top: 6px; }
-
-    .chart-box {
-      margin-top: 16px;
-      background: rgba(255,255,255,.03);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 14px;
-      padding: 12px;
-    }
-    #chartCanvas {
-      width: 100%;
-      height: 280px;
-      display: block;
-      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0));
-      border-radius: 10px;
-    }
-
-    .table-wrap {
-      overflow: auto;
-      margin-top: 14px;
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 14px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 1400px;
-      background: #0b1220;
-    }
-    th, td {
-      border-bottom: 1px solid rgba(255,255,255,.06);
-      padding: 10px 8px;
-      text-align: center;
-      font-size: 12px;
-      vertical-align: middle;
-    }
-    th {
-      background: #10192c;
-      color: #dbeafe;
-      position: sticky;
-      top: 0;
-      z-index: 2;
-    }
-    tr:hover td { background: rgba(255,255,255,.025); }
-
-    .mini-btn {
-      padding: 7px 10px;
-      border-radius: 10px;
-      font-size: 12px;
-      margin: 2px;
-    }
-    .badge {
-      display: inline-block;
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 700;
-    }
-    .ok { background: rgba(34,197,94,.14); color: #86efac; }
-    .pending { background: rgba(245,158,11,.15); color: #fcd34d; }
-    .error { background: rgba(239,68,68,.15); color: #fca5a5; }
-
-    .config-box {
-      margin-top: 12px;
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px dashed rgba(56,189,248,.5);
-      background: rgba(56,189,248,.06);
-    }
-    .config-box code {
-      color: #bae6fd;
-      word-break: break-all;
-    }
-
-    .footer {
-      text-align: center;
-      color: var(--muted);
-      font-size: 12px;
-      padding: 20px 0 8px;
-    }
-
-    @media (max-width: 1180px) {
-      .grid-main, .form-grid, .kpi-grid, .status-bar { grid-template-columns: 1fr; }
-    }
-
-    @media print {
-      body { background: white; color: #111; }
-      header, .actions, .config-box { display: none; }
-      .card { box-shadow: none; border: 1px solid #ddd; background: white; }
-      th { position: static; }
-    }
+    @media(max-width:980px){.split{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
- <header>
-  <div>
-    <img src="logo_asefortmec.png" alt="Logo Asefortmec" />
+<header>
+  <div class="header-row">
+    <div class="brand-left">
+      <div class="logo">AP</div>
+      <div>
+        <h1>Dashboard de Perforación Full</h1>
+        <div class="sub">Con ingreso local, importación CSV, lectura desde base, sincronización y gráficos operacionales.</div>
+      </div>
     <div>
-        <h1>Registro de Perforación PRO</h1>
-        <p>Control operacional, consumo de insumos, edición local y sincronización a Google Sheets.</p>
+    <img src="logo_Xtreme.png" alt="Xtreme Mining" />
+      <div class="xtreme-mark">X</div>
+      <div class="xtreme-text"><b>XTREME</b><span>PERFORACIÓN</span></div>
+    </div>
+  </div>
+</header>
+<main class="grid">
+  <details class="panel-toggle">
+    <summary>
+      <span>Configuración</span>
+      <span class="summary-note">URL, carga desde base e importación histórica</span>
+    </summary>
+    <div class="details-content">
+      <section class="card">
+        <h2 class="section-title">Configuración</h2>
+    <div class="form-grid">
+      <div style="grid-column:1/-1">
+        <label>URL de Google Apps Script</label>
+        <input id="appsScriptUrl" placeholder="https://script.google.com/macros/s/AKfycbzSfTz9ZF2fcaMjFcM0-fxb7on5IWOnCBGCdI6pgIloOnImDZRJQtEpbSrbPIRkjEph/exec">
       </div>
     </div>
-  </header>
-
-  <main class="wrap">
-    <div class="grid-main">
-      <section class="card">
-        <h2>Ingreso de datos</h2>
-        <p class="subnote">Esta versión mejora tu archivo original, que guardaba información solo en el navegador con <strong>localStorage</strong>, agregando sincronización a una base en Google Sheets, control de edición y estado de envío. fileciteturn0file0</p>
-
-        <div class="status-bar">
-          <div class="status-pill">
-            <small>Registros locales</small>
-            <strong id="statusLocalCount">0</strong>
-          </div>
-          <div class="status-pill">
-            <small>Pendientes por sincronizar</small>
-            <strong id="statusPendingCount">0</strong>
-          </div>
-          <div class="status-pill">
-            <small>Estado conexión base</small>
-            <strong id="statusBase">Sin configurar</strong>
-          </div>
-        </div>
-
-        <div class="form-grid">
-          <div class="field"><label for="fecha">Fecha</label><input type="date" id="fecha"></div>
-          <div class="field"><label for="turno">Turno</label><select id="turno"><option value="">Seleccionar...</option><option value="A">Turno A</option><option value="B">Turno B</option><option value="C">Turno C</option></select></div>
-          <div class="field"><label for="faena">Faena / Proyecto</label><input type="text" id="faena" placeholder="Ej: El Teniente"></div>
-
-          <div class="field"><label for="equipo">Equipo</label><select id="equipo"><option value="">Seleccionar...</option><option value="BOOMER S1D J-133">BOOMER S1D J-133</option><option value="BOOMER S1D J-187">BOOMER S1D J-187</option><option value="SIMBA S7D J-163">SIMBA S7D J-163</option><option value="BOLTEC M10S">BOLTEC M10S</option><option value="SANDVIK DD321D J-587">SANDVIK DD321D J-587</option></select></div>
-          <div class="field"><label for="operador">Operador</label><input type="text" id="operador" placeholder="Nombre operador"></div>
-          <div class="field"><label for="frente">Frente / Sector</label><input type="text" id="frente" placeholder="Ej: Panel 5"></div>
-
-          <div class="field"><label for="tipoPerforacion">Tipo de perforación</label><select id="tipoPerforacion"><option value="">Seleccionar...</option><option value="Avance">Avance</option><option value="Fortificación">Fortificación</option><option value="Demolición de muros">Demolición de muros</option><option value="Otra">Otra</option></select></div>
-          <div class="field"><label for="diametro">Diámetro (mm)</label><select id="diametro"><option value="">Seleccionar...</option><option value="51">51</option><option value="45">45</option><option value="64">64</option></select></div>
-          <div class="field"><label for="tipoBarra">Tipo de barra</label><select id="tipoBarra"><option value="">Seleccionar...</option><option value="4.30_T38R32">Acero 4,30 m T38R32</option><option value="3.70_T38R32">Acero 3,70 m T38R32</option><option value="3.10_T38R32">Acero 3,10 m T38R32</option><option value="2.70_T38R32">Acero 2,70 m T38R32</option><option value="1.50_T38T38">MF 1,50 m T38T38</option></select></div>
-
-          <div class="field"><label for="largoBarra">Largo barra (m)</label><input type="number" id="largoBarra" min="0" step="0.01"></div>
-          <div class="field"><label for="numTaladros">N° taladros</label><input type="number" id="numTaladros" min="0" step="1"></div>
-          <div class="field"><label for="profundidadProm">Profundidad promedio (m)</label><input type="number" id="profundidadProm" min="0" step="0.01"></div>
-        </div>
-
-        <div class="actions">
-          <button id="addRowBtn" class="btn-primary">Agregar registro</button>
-          <button id="syncBtn" class="btn-secondary">Sincronizar con base</button>
-          <button id="clearFormBtn" class="btn-dark">Limpiar formulario</button>
-          <button id="downloadPdfBtn" class="btn-warn">Imprimir / PDF</button>
-          <button id="exportCsvBtn" class="btn-dark">Exportar CSV</button>
-          <button id="clearDataBtn" class="btn-danger">Borrar todo</button>
-        </div>
-
-        <div class="config-box">
-          <strong>Configurar base:</strong> pega tu URL de Apps Script en la constante <code>APPS_SCRIPT_URL</code> dentro del archivo HTML.
-          <br><small>Luego presiona <strong>Sincronizar con base</strong>. Los registros que no hayan sido enviados quedarán marcados como pendientes.</small>
-        </div>
-      </section>
-
-      <section class="card">
-        <h2>Dashboard operacional</h2>
-        <div class="kpi-grid">
-          <div class="kpi"><div class="t">Metros perforados</div><div class="v" id="kpiMetros">0</div><div class="s">m acumulados</div></div>
-          <div class="kpi"><div class="t">Acero total</div><div class="v" id="kpiAcero">0</div><div class="s">m equivalentes</div></div>
-          <div class="kpi"><div class="t">Consumo bits</div><div class="v" id="kpiBits">0</div><div class="s">unidades estimadas</div></div>
-          <div class="kpi"><div class="t">Consumo barras</div><div class="v" id="kpiBarras">0</div><div class="s">unidades estimadas</div></div>
-          <div class="kpi"><div class="t">Consumo culatines</div><div class="v" id="kpiCulatines">0</div><div class="s">unidades estimadas</div></div>
-          <div class="kpi"><div class="t">Promedio por registro</div><div class="v" id="kpiPromedio">0</div><div class="s">m por carga</div></div>
-        </div>
-
-        <div class="chart-box">
-          <div style="margin-bottom:8px;color:#cbd5e1;font-size:13px;font-weight:700;">Metros perforados por equipo</div>
-          <canvas id="chartCanvas" width="640" height="280"></canvas>
-        </div>
+    <div class="btnrow">
+      <button class="btn6" id="saveConfigBtn">Guardar URL</button>
+      <button class="btn2" id="loadBaseBtn">Cargar desde base</button>
+      <button class="btn5" id="downloadTemplateBtn">Descargar plantilla CSV</button>
+      <label class="btn3" for="importCSV" style="display:inline-flex;align-items:center">Importar CSV</label>
+      <input type="file" id="importCSV" accept=".csv" style="display:none">
+    </div>
+    <div class="small" style="margin-top:10px">Google Sheets.</div>
       </section>
     </div>
+  </details>
 
-    <section class="card" style="margin-top:18px;">
-      <h2>Registros históricos</h2>
-      <div class="table-wrap">
-        <table id="regTable">
+  <details class="panel-toggle">
+    <summary>
+      <span>Ingreso de datos</span>
+      <span class="summary-note">Formulario de captura manual</span>
+    </summary>
+    <div class="details-content">
+      <section class="card">
+        <h2 class="section-title">Ingreso de datos</h2>
+    <div class="form-grid">
+      <div><label>Fecha</label><input type="date" id="fecha" class="date-input"></div>
+      <div><label>Turno</label><select id="turno"><option value="">Seleccionar...</option><option>A</option><option>B</option><option>C</option></select></div>
+      <div><label>Faena / Mina</label><input id="faena" list="faenaOptions" placeholder="Seleccionar o escribir"></div>
+      <div><label>Equipo</label><input id="equipo" list="equipoOptions" placeholder="Seleccionar o escribir"></div>
+      <div><label>Operador</label><input id="operador" list="operadorOptions" placeholder="Seleccionar o escribir"></div>
+      <div><label>Frente / Sector</label><input id="frente" placeholder="Ej: C-1-Z-8 HW"></div>
+      <div><label>Tipo de perforación</label><select id="tipoPerforacion"><option value="">Seleccionar...</option><option>Avance</option><option>Fortificación</option><option>Producción</option><option>Demolición de muros</option><option>Otra</option></select></div>
+      <div><label>Diámetro (mm)</label><select id="diametro"><option value="">Seleccionar...</option><option value="45">45</option><option value="51">51</option><option value="64">64</option></select></div>
+      <div><label>Tipo de barra</label><input id="tipoBarra" placeholder="Ej: 3.10_T38R32"></div>
+      <div><label>Largo barra (m)</label><input type="number" step="0.01" id="largoBarra"></div>
+      <div><label>N° taladros</label><input type="number" step="1" id="numTaladros"></div>
+      <div><label>Profundidad promedio (m)</label><input type="number" step="0.01" id="profundidadProm"></div>
+      <div><label>Horas efectivas perforación</label><input type="number" step="0.01" id="horasPerforacion" placeholder="Opcional"></div>
+      <div style="grid-column:1/-1"><label>Observación</label><textarea id="observacion" placeholder="Opcional"></textarea></div>
+    </div>
+    <datalist id="faenaOptions"></datalist>
+    <datalist id="equipoOptions"></datalist>
+    <datalist id="operadorOptions"></datalist>
+    <div class="btnrow">
+      <button class="btn" id="saveBtn">Agregar registro</button>
+      <button class="btn2" id="syncBtn">Sincronizar con base</button>
+      <button class="btn5" id="exportBtn">Exportar CSV</button>
+      <button class="btn3" id="printBtn">Imprimir / PDF</button>
+      <button class="btn4" id="clearBtn">Borrar datos locales</button>
+    </div>
+      </section>
+    </div>
+  </details>
+
+  <section class="card">
+    <h2 class="section-title">Filtros analíticos</h2>
+    <div class="filter-grid">
+      <div><label>Fecha desde</label><input type="date" id="fDesde" class="date-input"></div>
+      <div><label>Fecha hasta</label><input type="date" id="fHasta" class="date-input"></div>
+      <div><label>Mina / Faena</label><select id="fFaena"><option value="">Todas</option></select></div>
+      <div><label>Equipo</label><select id="fEquipo"><option value="">Todos</option></select></div>
+      <div><label>Operador</label><select id="fOperador"><option value="">Todos</option></select></div>
+      <div><label>Tipo perforación</label><select id="fTipo"><option value="">Todos</option></select></div>
+      <div><button class="btn3" id="resetFilters">Limpiar filtros</button></div>
+    </div>
+  </section>
+
+  <section class="kpis" id="kpis"></section>
+
+  <section class="charts">
+    <div class="chart-wrap"><div class="section-title">Metros perforados por mes</div><canvas id="chartMes"></canvas></div>
+    <div class="chart-wrap"><div class="section-title">Producción por faena</div><canvas id="chartFaena"></canvas></div>
+    <div class="chart-wrap"><div class="section-title">Metros por equipo</div><canvas id="chartEquipo"></canvas></div>
+    <div class="chart-wrap"><div class="section-title">Rendimiento por operador (m)</div><canvas id="chartOperador"></canvas></div>
+    <div class="chart-wrap"><div class="section-title">m/h por operador</div><canvas id="chartMph"></canvas></div>
+    <div class="chart-wrap"><div class="section-title">Acero por metro por equipo</div><canvas id="chartAcero"></canvas></div>
+    <div class="chart-wrap"><div class="section-title">Acero total por equipo (m)</div><canvas id="chartAceroTotal"></canvas></div>
+    <div class="chart-wrap"><div class="section-title">Consumo BIT por equipo</div><canvas id="chartBit"></canvas></div>
+    <div class="chart-wrap"><div class="section-title">Consumo BARRA por equipo</div><canvas id="chartBarra"></canvas></div>
+    <div class="chart-wrap"><div class="section-title">Consumo CULATÍN por equipo</div><canvas id="chartCulatin"></canvas></div>
+  </section>
+
+  <section class="split">
+    <div class="card">
+      <h2 class="section-title">Tabla histórica filtrada</h2>
+      <div class="scroll">
+        <table>
           <thead>
-            <tr>
-              <th>#</th>
-              <th>Estado base</th>
-              <th>Fecha</th>
-              <th>Turno</th>
-              <th>Faena</th>
-              <th>Equipo</th>
-              <th>Operador</th>
-              <th>Frente</th>
-              <th>Tipo</th>
-              <th>Ø</th>
-              <th>Taladros</th>
-              <th>Prof. prom.</th>
-              <th>Metros</th>
-              <th>Acero</th>
-              <th>BIT</th>
-              <th>BARRA</th>
-              <th>CULATÍN</th>
-              <th>Acciones</th>
-            </tr>
+            <tr><th>Fecha</th><th>Turno</th><th>Faena</th><th>Equipo</th><th>Operador</th><th>Frente</th><th>Tipo</th><th>m</th><th>m/h</th><th>Acero/m</th><th>Sync</th><th>Acciones</th></tr>
           </thead>
-          <tbody></tbody>
-          <tfoot>
-            <tr>
-              <td colspan="12"><strong>TOTALES</strong></td>
-              <td id="totalMetros">0</td>
-              <td id="totalAcero">0</td>
-              <td id="totalBits">0</td>
-              <td id="totalBarras">0</td>
-              <td id="totalCulatines">0</td>
-              <td>-</td>
-            </tr>
-          </tfoot>
+          <tbody id="tbody"></tbody>
         </table>
       </div>
-    </section>
+    </div>
+    <div class="card">
+      <h2 class="section-title">Resumen operacional</h2>
+      <div id="resumen" class="small"></div>
+      <hr style="border-color:#334155;border-style:solid;border-width:1px 0 0;margin:16px 0">
+      <div class="small muted">Formato de hoja esperado en Google Sheets: ID, ACTION, CREATED_AT, UPDATED_AT, SYNCED_AT, FECHA, TURNO, FAENA, EQUIPO, OPERADOR, FRENTE, TIPO_PERFORACION, DIAMETRO, TIPO_BARRA, LARGO_BARRA, NUM_TALADROS, PROFUNDIDAD_PROM, HORAS_PERFORACION, METROS_PERFORADOS, ACERO_TOTAL, CONSUMO_BIT, CONSUMO_BARRA, CONSUMO_CULATIN, MPH, ACERO_POR_METRO, OBSERVACION.</div>
+    </div>
+  </section>
+</main>
+<script>
+const STORAGE_KEY = 'dashboard_perforacion_full_v1';
+const CONFIG_KEY = 'dashboard_perforacion_full_config';
+const LEGACY_KEYS = ['registro_perforacion_datos','registro_perforacion_pro_datos','registro_perforacion_dashboard_avanzado_v2'];
+const parametros = { BIT:{'45':80,'51':100,'64':100}, BARRA:{'45':250,'51':300,'64':300}, CULATIN:{'45':350,'51':350,'64':350}, BARRA_MF_T38:250 };
+let editId = null;
 
-    <div class="footer">Desarrollado para control de perforación subterránea · Bernardo Ojeda Molina</div>
-  </main>
-
-  <script>
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyTuSH37rM-bISJZMhd1T_cXYFBZ52g1V5alIEGzbeZ22W07XbNS37eP2qSApPP_Ogz/exec";
-
-    const parametros = {
-      BIT: { "51": 100, "45": 80, "64": 100 },
-      BARRA: { "51": 300, "45": 250, "64": 300 },
-      BARRA_MF_T38: 250,
-      CULATIN: { "51": 350, "45": 350, "64": 350 }
-    };
-
-    const STORAGE_KEY = "registro_perforacion_pro_datos";
-    let editId = null;
-
-    const barrasConfig = {
-      "4.30_T38R32": 4.30,
-      "3.70_T38R32": 3.70,
-      "3.10_T38R32": 3.10,
-      "2.70_T38R32": 2.70,
-      "1.50_T38T38": 1.50
-    };
-
-    function uid() {
-      return "REG-" + Date.now() + "-" + Math.floor(Math.random() * 100000);
-    }
-
-    function redondear(num, dec = 2) {
-      return Math.round((Number(num) || 0) * Math.pow(10, dec)) / Math.pow(10, dec);
-    }
-
-    function cargarDatos() {
-      try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-      } catch {
-        return [];
-      }
-    }
-
-    function guardarDatos(registros) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
-    }
-
-    function calcularConsumos(diametro, metrosPerforados, largoBarra) {
-      const d = String(diametro);
-      const rendBit = parametros.BIT[d] || 0;
-      let rendBarra = parametros.BARRA[d] || 0;
-      if (Math.abs(Number(largoBarra) - 1.5) < 0.01) rendBarra = parametros.BARRA_MF_T38;
-      const rendCulatin = parametros.CULATIN[d] || 0;
-      return {
-        bit: rendBit ? redondear(metrosPerforados / rendBit) : 0,
-        barra: rendBarra ? redondear(metrosPerforados / rendBarra) : 0,
-        culatin: rendCulatin ? redondear(metrosPerforados / rendCulatin) : 0,
-      };
-    }
-
-    function estadoBadge(syncStatus) {
-      if (syncStatus === "synced") return '<span class="badge ok">Sincronizado</span>';
-      if (syncStatus === "error") return '<span class="badge error">Error</span>';
-      return '<span class="badge pending">Pendiente</span>';
-    }
-
-    function obtenerFormulario() {
-      return {
-        fecha: document.getElementById("fecha").value,
-        turno: document.getElementById("turno").value,
-        faena: document.getElementById("faena").value.trim(),
-        equipo: document.getElementById("equipo").value.trim(),
-        operador: document.getElementById("operador").value.trim(),
-        frente: document.getElementById("frente").value.trim(),
-        tipoPerforacion: document.getElementById("tipoPerforacion").value,
-        diametro: document.getElementById("diametro").value,
-        tipoBarra: document.getElementById("tipoBarra").value,
-        largoBarra: parseFloat(document.getElementById("largoBarra").value || "0"),
-        numTaladros: parseInt(document.getElementById("numTaladros").value || "0", 10),
-        profundidadProm: parseFloat(document.getElementById("profundidadProm").value || "0")
-      };
-    }
-
-    function validarFormulario(d) {
-      if (!d.fecha || !d.turno || !d.faena || !d.equipo || !d.frente || !d.tipoPerforacion || !d.diametro) {
-        alert("Completa Fecha, Turno, Faena, Equipo, Frente, Tipo de perforación y Diámetro.");
-        return false;
-      }
-      if (d.numTaladros <= 0 || d.profundidadProm <= 0) {
-        alert("N° taladros y profundidad promedio deben ser mayores a 0.");
-        return false;
-      }
-      return true;
-    }
-
-    function limpiarFormulario() {
-      ["fecha","turno","faena","equipo","operador","frente","tipoPerforacion","diametro","tipoBarra","largoBarra","numTaladros","profundidadProm"].forEach(id => {
-        document.getElementById(id).value = "";
-      });
-      editId = null;
-      document.getElementById("addRowBtn").textContent = "Agregar registro";
-    }
-
-    function agregarRegistro() {
-      const d = obtenerFormulario();
-      if (!validarFormulario(d)) return;
-
-      const metrosPerforados = redondear(d.numTaladros * d.profundidadProm);
-      const aceroTotal = metrosPerforados;
-      const consumos = calcularConsumos(d.diametro, metrosPerforados, d.largoBarra);
-      const registros = cargarDatos();
-
-      const regBase = {
-        fecha: d.fecha,
-        turno: d.turno,
-        faena: d.faena,
-        equipo: d.equipo,
-        operador: d.operador,
-        frente: d.frente,
-        tipoPerforacion: d.tipoPerforacion,
-        diametro: parseInt(d.diametro, 10),
-        tipoBarra: d.tipoBarra,
-        largoBarra: redondear(d.largoBarra),
-        numTaladros: d.numTaladros,
-        profundidadProm: redondear(d.profundidadProm),
-        metrosPerforados,
-        aceroTotal,
-        consumoBit: consumos.bit,
-        consumoBarra: consumos.barra,
-        consumoCulatin: consumos.culatin,
-        updatedAt: new Date().toISOString(),
-        syncStatus: "pending"
-      };
-
-      if (editId) {
-        const idx = registros.findIndex(r => r.id === editId);
-        if (idx >= 0) {
-          registros[idx] = { ...registros[idx], ...regBase, action: "upsert" };
-        }
-      } else {
-        registros.push({ id: uid(), createdAt: new Date().toISOString(), action: "upsert", ...regBase });
-      }
-
-      guardarDatos(registros);
-      refrescarTodo();
-      limpiarFormulario();
-    }
-
-    function iniciarEdicion(id) {
-      const reg = cargarDatos().find(r => r.id === id);
-      if (!reg) return;
-      document.getElementById("fecha").value = reg.fecha || "";
-      document.getElementById("turno").value = reg.turno || "";
-      document.getElementById("faena").value = reg.faena || "";
-      document.getElementById("equipo").value = reg.equipo || "";
-      document.getElementById("operador").value = reg.operador || "";
-      document.getElementById("frente").value = reg.frente || "";
-      document.getElementById("tipoPerforacion").value = reg.tipoPerforacion || "";
-      document.getElementById("diametro").value = reg.diametro || "";
-      document.getElementById("tipoBarra").value = reg.tipoBarra || "";
-      document.getElementById("largoBarra").value = reg.largoBarra || "";
-      document.getElementById("numTaladros").value = reg.numTaladros || "";
-      document.getElementById("profundidadProm").value = reg.profundidadProm || "";
-      editId = id;
-      document.getElementById("addRowBtn").textContent = "Guardar cambios";
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function eliminarRegistro(id) {
-      const registros = cargarDatos();
-      const idx = registros.findIndex(r => r.id === id);
-      if (idx < 0) return;
-      if (!confirm("¿Deseas eliminar este registro?")) return;
-
-      if (registros[idx].syncStatus === "synced") {
-        registros[idx] = { ...registros[idx], action: "delete", syncStatus: "pending", updatedAt: new Date().toISOString() };
-      } else {
-        registros.splice(idx, 1);
-      }
-
-      if (editId === id) limpiarFormulario();
-      guardarDatos(registros);
-      refrescarTodo();
-    }
-
-    function borrarTodo() {
-      if (!confirm("¿Seguro que deseas borrar todos los registros locales?")) return;
-      localStorage.removeItem(STORAGE_KEY);
-      limpiarFormulario();
-      refrescarTodo();
-    }
-
-    function exportarCSV() {
-      const registros = cargarDatos().filter(r => r.action !== "delete");
-      if (!registros.length) return alert("No hay registros para exportar.");
-      const headers = ["ID","Fecha","Turno","Faena","Equipo","Operador","Frente","Tipo","Diametro","TipoBarra","LargoBarra","NumTaladros","ProfundidadProm","MetrosPerforados","AceroTotal","ConsumoBit","ConsumoBarra","ConsumoCulatin","EstadoBase"];
-      let csv = headers.join(";") + "\n";
-      registros.forEach(r => {
-        csv += [r.id,r.fecha,r.turno,r.faena,r.equipo,r.operador,r.frente,r.tipoPerforacion,r.diametro,r.tipoBarra,r.largoBarra,r.numTaladros,r.profundidadProm,r.metrosPerforados,r.aceroTotal,r.consumoBit,r.consumoBarra,r.consumoCulatin,r.syncStatus].join(";") + "\n";
-      });
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "registro_perforacion_pro.csv";
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    async function enviarRegistroABase(registro) {
-      const payload = { ...registro };
-      const resp = await fetch(APPS_SCRIPT_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(payload)
-      });
-      return resp.json();
-    }
-
-    async function sincronizarPendientes() {
-      const registros = cargarDatos();
-      const pendientes = registros.filter(r => r.syncStatus !== "synced" || r.action === "delete");
-      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes("PEGAR_AQUI")) {
-        document.getElementById("statusBase").textContent = "Sin configurar";
-        return alert("Primero debes pegar tu URL de Google Apps Script en APPS_SCRIPT_URL.");
-      }
-      if (!pendientes.length) {
-        document.getElementById("statusBase").textContent = "Al día";
-        return alert("No hay registros pendientes por sincronizar.");
-      }
-
-      document.getElementById("statusBase").textContent = "Sincronizando...";
-
-      for (let i = 0; i < registros.length; i++) {
-        const r = registros[i];
-        if (r.syncStatus === "synced" && r.action !== "delete") continue;
-        try {
-          const result = await enviarRegistroABase(r);
-          if (result && result.result === "success") {
-            if (r.action === "delete") {
-              registros.splice(i, 1);
-              i--;
-            } else {
-              registros[i].syncStatus = "synced";
-              registros[i].lastSyncAt = new Date().toISOString();
-            }
-          } else {
-            registros[i].syncStatus = "error";
-          }
-        } catch (e) {
-          registros[i].syncStatus = "error";
-        }
-        guardarDatos(registros);
-        refrescarTodo();
-      }
-
-      const siguenPendientes = cargarDatos().some(r => r.syncStatus !== "synced" || r.action === "delete");
-      document.getElementById("statusBase").textContent = siguenPendientes ? "Con errores" : "Al día";
-      if (!siguenPendientes) alert("Sincronización completada correctamente.");
-    }
-
-    function refrescarTabla() {
-      const tbody = document.querySelector("#regTable tbody");
-      const registros = cargarDatos().filter(r => r.action !== "delete");
-      tbody.innerHTML = "";
-
-      let totalMetros = 0, totalAcero = 0, totalBits = 0, totalBarras = 0, totalCulatines = 0;
-      registros.forEach((reg, idx) => {
-        totalMetros += Number(reg.metrosPerforados || 0);
-        totalAcero += Number(reg.aceroTotal || 0);
-        totalBits += Number(reg.consumoBit || 0);
-        totalBarras += Number(reg.consumoBarra || 0);
-        totalCulatines += Number(reg.consumoCulatin || 0);
-
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${idx + 1}</td>
-          <td>${estadoBadge(reg.syncStatus)}</td>
-          <td>${reg.fecha || ""}</td>
-          <td>${reg.turno || ""}</td>
-          <td>${reg.faena || ""}</td>
-          <td>${reg.equipo || ""}</td>
-          <td>${reg.operador || ""}</td>
-          <td>${reg.frente || ""}</td>
-          <td>${reg.tipoPerforacion || ""}</td>
-          <td>${reg.diametro || ""}</td>
-          <td>${reg.numTaladros || 0}</td>
-          <td>${reg.profundidadProm || 0}</td>
-          <td>${reg.metrosPerforados || 0}</td>
-          <td>${reg.aceroTotal || 0}</td>
-          <td>${reg.consumoBit || 0}</td>
-          <td>${reg.consumoBarra || 0}</td>
-          <td>${reg.consumoCulatin || 0}</td>
-          <td>
-            <button class="mini-btn btn-warn" onclick="iniciarEdicion('${reg.id}')">Editar</button>
-            <button class="mini-btn btn-danger" onclick="eliminarRegistro('${reg.id}')">Eliminar</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      document.getElementById("totalMetros").textContent = redondear(totalMetros);
-      document.getElementById("totalAcero").textContent = redondear(totalAcero);
-      document.getElementById("totalBits").textContent = redondear(totalBits);
-      document.getElementById("totalBarras").textContent = redondear(totalBarras);
-      document.getElementById("totalCulatines").textContent = redondear(totalCulatines);
-
-      document.getElementById("kpiMetros").textContent = redondear(totalMetros);
-      document.getElementById("kpiAcero").textContent = redondear(totalAcero);
-      document.getElementById("kpiBits").textContent = redondear(totalBits);
-      document.getElementById("kpiBarras").textContent = redondear(totalBarras);
-      document.getElementById("kpiCulatines").textContent = redondear(totalCulatines);
-      document.getElementById("kpiPromedio").textContent = registros.length ? redondear(totalMetros / registros.length) : 0;
-
-      const pendientes = cargarDatos().filter(r => r.syncStatus !== "synced" || r.action === "delete").length;
-      document.getElementById("statusLocalCount").textContent = registros.length;
-      document.getElementById("statusPendingCount").textContent = pendientes;
-    }
-
-    function dibujarGrafico() {
-      const canvas = document.getElementById("chartCanvas");
-      const ctx = canvas.getContext("2d");
-      const width = canvas.width;
-      const height = canvas.height;
-      ctx.clearRect(0, 0, width, height);
-
-      const registros = cargarDatos().filter(r => r.action !== "delete");
-      const porEquipo = {};
-      registros.forEach(r => {
-        porEquipo[r.equipo] = (porEquipo[r.equipo] || 0) + Number(r.metrosPerforados || 0);
-      });
-      const entries = Object.entries(porEquipo);
-      if (!entries.length) {
-        ctx.fillStyle = "#94a3b8";
-        ctx.font = "14px Arial";
-        ctx.fillText("Sin datos para graficar", 20, 40);
-        return;
-      }
-
-      const max = Math.max(...entries.map(e => e[1]), 1);
-      const left = 70, right = 20, top = 20, bottom = 60;
-      const plotW = width - left - right;
-      const plotH = height - top - bottom;
-      const barW = Math.max(34, plotW / entries.length * 0.55);
-      const gap = plotW / entries.length;
-
-      ctx.strokeStyle = "rgba(255,255,255,.12)";
-      ctx.lineWidth = 1;
-      for (let i = 0; i <= 5; i++) {
-        const y = top + (plotH / 5) * i;
-        ctx.beginPath();
-        ctx.moveTo(left, y);
-        ctx.lineTo(width - right, y);
-        ctx.stroke();
-      }
-
-      ctx.fillStyle = "#cbd5e1";
-      ctx.font = "12px Arial";
-      for (let i = 0; i <= 5; i++) {
-        const val = redondear(max - (max / 5) * i, 0);
-        const y = top + (plotH / 5) * i + 4;
-        ctx.fillText(String(val), 18, y);
-      }
-
-      entries.forEach((entry, i) => {
-        const [equipo, metros] = entry;
-        const h = (metros / max) * plotH;
-        const x = left + i * gap + (gap - barW) / 2;
-        const y = top + plotH - h;
-
-        const grd = ctx.createLinearGradient(0, y, 0, y + h);
-        grd.addColorStop(0, "#38bdf8");
-        grd.addColorStop(1, "#22c55e");
-        ctx.fillStyle = grd;
-        ctx.fillRect(x, y, barW, h);
-
-        ctx.fillStyle = "#e5e7eb";
-        ctx.font = "bold 12px Arial";
-        ctx.fillText(String(redondear(metros)), x + 4, y - 8);
-
-        ctx.save();
-        ctx.translate(x + barW / 2, height - 10);
-        ctx.rotate(-0.35);
-        ctx.textAlign = "right";
-        ctx.fillStyle = "#cbd5e1";
-        ctx.font = "11px Arial";
-        ctx.fillText(equipo, 0, 0);
-        ctx.restore();
+function uid(){ return `REG-${Date.now()}-${Math.floor(Math.random()*100000)}`; }
+function round(n,d=2){ n=Number(n||0); return Math.round(n*Math.pow(10,d))/Math.pow(10,d); }
+function escHtml(s){ return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function config(){ try{return JSON.parse(localStorage.getItem(CONFIG_KEY)||'{}');}catch{return {};} }
+function saveConfig(){ const cfg = { appsScriptUrl: document.getElementById('appsScriptUrl').value.trim() }; localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg)); alert('Configuración guardada.'); }
+function getAppsScriptUrl(){ return (config().appsScriptUrl || '').trim(); }
+function getStore(){ try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');}catch{return [];} }
+function setStore(rows){ localStorage.setItem(STORAGE_KEY, JSON.stringify(rows)); }
+function uniqueSortedValues(rows,key){
+  return [...new Set(rows.map(r => fixEncoding(r[key] || '').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));
+}
+function fillDatalist(id, values){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.innerHTML = values.map(v => `<option value="${escHtml(v)}"></option>`).join('');
+}
+function tryShowPicker(el){
+  if(el && typeof el.showPicker === 'function'){
+    try{ el.showPicker(); }catch(e){}
+  }
+}
+function toISODate(s){
+  if(!s) return '';
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  const p = String(s).trim().split(/[\/\-]/);
+  if(p.length===3){
+    if(p[0].length===4) return `${p[0]}-${String(p[1]).padStart(2,'0')}-${String(p[2]).padStart(2,'0')}`;
+    return `${p[2]}-${String(p[1]).padStart(2,'0')}-${String(p[0]).padStart(2,'0')}`;
+  }
+  return '';
+}
+function prettyDate(iso){ if(!iso) return ''; const [y,m,d]=iso.split('-'); return `${d}/${m}/${y}`; }
+function fixEncoding(text){
+  const map = {'Ã¡':'á','Ã©':'é','Ã­':'í','Ã³':'ó','Ãº':'ú','Ã':'Á','Ã‰':'É','Ã':'Í','Ã“':'Ó','Ãš':'Ú','Ã±':'ñ','Ã‘':'Ñ','Ã¼':'ü','Ãœ':'Ü'};
+  let out = String(text || '');
+  Object.keys(map).forEach(k=> out = out.split(k).join(map[k]));
+  return out;
+}
+function calcConsumos(diametro, metros, largoBarra, tipoBarra){
+  const d = String(diametro || '');
+  let rBarra = parametros.BARRA[d] || 0;
+  if(String(tipoBarra || '').includes('1.50') || Math.abs(Number(largoBarra || 0) - 1.5) < 0.01) rBarra = parametros.BARRA_MF_T38;
+  return {
+    consumoBit: round(metros / (parametros.BIT[d] || Infinity)),
+    consumoBarra: round(metros / (rBarra || Infinity)),
+    consumoCulatin: round(metros / (parametros.CULATIN[d] || Infinity))
+  };
+}
+function normalize(r){
+  if(!r) return null;
+  const reg = {...r};
+  reg.id = reg.id || uid();
+  reg.action = reg.action || 'upsert';
+  reg.fecha = toISODate(reg.fecha);
+  reg.turno = reg.turno || '';
+  reg.faena = fixEncoding(reg.faena || '');
+  reg.equipo = fixEncoding(reg.equipo || '');
+  reg.operador = fixEncoding(reg.operador || '');
+  reg.frente = fixEncoding(reg.frente || '');
+  reg.tipoPerforacion = fixEncoding(reg.tipoPerforacion || reg.tipo || '');
+  reg.diametro = Number(reg.diametro || 0) || '';
+  reg.tipoBarra = reg.tipoBarra || '';
+  reg.largoBarra = Number(reg.largoBarra || 0);
+  reg.numTaladros = Number(reg.numTaladros || 0);
+  reg.profundidadProm = Number(reg.profundidadProm || 0);
+  reg.horasPerforacion = Number(reg.horasPerforacion || 0);
+  reg.metrosPerforados = Number(reg.metrosPerforados || reg.aceroTotal || (reg.numTaladros * reg.profundidadProm) || 0);
+  reg.aceroTotal = Number(reg.aceroTotal || reg.metrosPerforados || 0);
+  if(reg.consumoBit == null || reg.consumoBarra == null || reg.consumoCulatin == null){ Object.assign(reg, calcConsumos(reg.diametro, reg.metrosPerforados, reg.largoBarra, reg.tipoBarra)); }
+  reg.mph = reg.horasPerforacion > 0 ? round(reg.metrosPerforados / reg.horasPerforacion) : Number(reg.mph || 0);
+  reg.aceroPorMetro = reg.metrosPerforados > 0 ? round(reg.aceroTotal / reg.metrosPerforados, 3) : Number(reg.aceroPorMetro || 0);
+  reg.observacion = fixEncoding(reg.observacion || '');
+  reg.syncStatus = reg.syncStatus || 'pendiente';
+  reg.createdAt = reg.createdAt || new Date().toISOString();
+  reg.updatedAt = reg.updatedAt || reg.createdAt;
+  return reg;
+}
+function parseLegacyRow(r){
+  if(!r) return null;
+  if(Array.isArray(r)){
+    if(r.length >= 26 && r[0] && String(r[0]).startsWith('REG-')){
+      return normalize({
+        id:r[0], action:r[1], createdAt:r[2], updatedAt:r[3], syncedAt:r[4], fecha:r[5], turno:r[6], faena:r[7], equipo:r[8], operador:r[9], frente:r[10], tipoPerforacion:r[11], diametro:r[12], tipoBarra:r[13], largoBarra:r[14], numTaladros:r[15], profundidadProm:r[16], horasPerforacion:r[17], metrosPerforados:r[18], aceroTotal:r[19], consumoBit:r[20], consumoBarra:r[21], consumoCulatin:r[22], mph:r[23], aceroPorMetro:r[24], observacion:r[25], syncStatus:'sincronizado'
       });
     }
-
-    function refrescarTodo() {
-      refrescarTabla();
-      dibujarGrafico();
+    if(r.length >= 15){
+      return normalize({ fecha:r[0], turno:r[1], faena:r[2], equipo:r[3], frente:r[4], tipoPerforacion:r[5], diametro:r[6], numTaladros:r[7], profundidadProm:r[8], largoBarra:r[9], metrosPerforados:r[10], aceroTotal:r[11], consumoBit:r[12], consumoBarra:r[13], consumoCulatin:r[14], syncStatus:'sincronizado' });
     }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("addRowBtn").addEventListener("click", agregarRegistro);
-      document.getElementById("syncBtn").addEventListener("click", sincronizarPendientes);
-      document.getElementById("clearFormBtn").addEventListener("click", limpiarFormulario);
-      document.getElementById("clearDataBtn").addEventListener("click", borrarTodo);
-      document.getElementById("downloadPdfBtn").addEventListener("click", () => window.print());
-      document.getElementById("exportCsvBtn").addEventListener("click", exportarCSV);
-      document.getElementById("tipoBarra").addEventListener("change", function() {
-        document.getElementById("largoBarra").value = barrasConfig[this.value] || "";
-      });
-      refrescarTodo();
+    return null;
+  }
+  if(typeof r === 'object'){
+    return normalize({
+      id: r.id ?? r.ID ?? '',
+      action: r.action ?? r.ACTION ?? 'upsert',
+      createdAt: r.createdAt ?? r.CREATED_AT ?? '',
+      updatedAt: r.updatedAt ?? r.UPDATED_AT ?? '',
+      syncedAt: r.syncedAt ?? r.SYNCED_AT ?? '',
+      fecha: r.fecha ?? r.FECHA ?? '',
+      turno: r.turno ?? r.TURNO ?? '',
+      faena: r.faena ?? r.FAENA ?? '',
+      equipo: r.equipo ?? r.EQUIPO ?? '',
+      operador: r.operador ?? r.OPERADOR ?? '',
+      frente: r.frente ?? r.FRENTE ?? '',
+      tipoPerforacion: r.tipoPerforacion ?? r.TIPO_PERFORACION ?? '',
+      diametro: r.diametro ?? r.DIAMETRO ?? '',
+      tipoBarra: r.tipoBarra ?? r.TIPO_BARRA ?? '',
+      largoBarra: r.largoBarra ?? r.LARGO_BARRA ?? '',
+      numTaladros: r.numTaladros ?? r.NUM_TALADROS ?? '',
+      profundidadProm: r.profundidadProm ?? r.PROFUNDIDAD_PROM ?? '',
+      horasPerforacion: r.horasPerforacion ?? r.HORAS_PERFORACION ?? '',
+      metrosPerforados: r.metrosPerforados ?? r.METROS_PERFORADOS ?? '',
+      aceroTotal: r.aceroTotal ?? r.ACERO_TOTAL ?? '',
+      consumoBit: r.consumoBit ?? r.CONSUMO_BIT ?? '',
+      consumoBarra: r.consumoBarra ?? r.CONSUMO_BARRA ?? '',
+      consumoCulatin: r.consumoCulatin ?? r.CONSUMO_CULATIN ?? '',
+      mph: r.mph ?? r.MPH ?? '',
+      aceroPorMetro: r.aceroPorMetro ?? r.ACERO_POR_METRO ?? '',
+      observacion: r.observacion ?? r.OBSERVACION ?? '',
+      syncStatus: 'sincronizado'
     });
-  </script>
+  }
+  return null;
+}
+function migrateLegacy(){
+  let rows = getStore();
+  if(rows.length){ setStore(rows.map(normalize).filter(Boolean)); return; }
+  const imported = [];
+  LEGACY_KEYS.forEach(k => {
+    try{ const arr = JSON.parse(localStorage.getItem(k) || '[]'); arr.forEach(x => { const n = parseLegacyRow(x); if(n) imported.push(n); }); } catch(e){}
+  });
+  if(imported.length) mergeRecords(imported, false);
+}
+function mergeRecords(newRows, preferIncoming=true){
+  const map = new Map(getStore().map(r => [r.id, normalize(r)]));
+  newRows.map(normalize).filter(Boolean).forEach(r => {
+    const prev = map.get(r.id);
+    if(!prev) map.set(r.id, r);
+    else if(preferIncoming || new Date(r.updatedAt || 0) >= new Date(prev.updatedAt || 0)) map.set(r.id, {...prev, ...r});
+  });
+  const rows = [...map.values()];
+  setStore(rows);
+  return rows;
+}
+function formData(){
+  const d = {
+    id: editId || uid(), action:'upsert', fecha:document.getElementById('fecha').value, turno:document.getElementById('turno').value,
+    faena:document.getElementById('faena').value.trim(), equipo:document.getElementById('equipo').value.trim(), operador:document.getElementById('operador').value.trim(),
+    frente:document.getElementById('frente').value.trim(), tipoPerforacion:document.getElementById('tipoPerforacion').value, diametro:Number(document.getElementById('diametro').value || 0),
+    tipoBarra:document.getElementById('tipoBarra').value.trim(), largoBarra:Number(document.getElementById('largoBarra').value || 0), numTaladros:Number(document.getElementById('numTaladros').value || 0),
+    profundidadProm:Number(document.getElementById('profundidadProm').value || 0), horasPerforacion:Number(document.getElementById('horasPerforacion').value || 0), observacion:document.getElementById('observacion').value.trim(),
+    updatedAt:new Date().toISOString(), createdAt:new Date().toISOString(), syncStatus:'pendiente'
+  };
+  if(!d.fecha || !d.turno || !d.faena || !d.equipo || !d.frente || !d.tipoPerforacion || !d.diametro || !d.numTaladros || !d.profundidadProm){ alert('Completa al menos Fecha, Turno, Faena, Equipo, Frente, Tipo, Diámetro, N° taladros y Profundidad promedio.'); return null; }
+  d.metrosPerforados = round(d.numTaladros * d.profundidadProm);
+  d.aceroTotal = round(d.metrosPerforados);
+  Object.assign(d, calcConsumos(d.diametro, d.metrosPerforados, d.largoBarra, d.tipoBarra));
+  d.mph = d.horasPerforacion > 0 ? round(d.metrosPerforados / d.horasPerforacion) : 0;
+  d.aceroPorMetro = d.metrosPerforados > 0 ? round(d.aceroTotal / d.metrosPerforados, 3) : 0;
+  return d;
+}
+function clearForm(){ ['fecha','turno','faena','equipo','operador','frente','tipoPerforacion','diametro','tipoBarra','largoBarra','numTaladros','profundidadProm','horasPerforacion','observacion'].forEach(id => document.getElementById(id).value = ''); editId = null; document.getElementById('saveBtn').textContent = 'Agregar registro'; }
+function saveRecord(){
+  const rec = formData(); if(!rec) return;
+  let rows = getStore();
+  const i = rows.findIndex(r => r.id === rec.id);
+  if(i >= 0){ rec.createdAt = rows[i].createdAt || rec.createdAt; rows[i] = rec; }
+  else rows.push(rec);
+  setStore(rows); clearForm(); render();
+}
+function editRecord(id){ const r = getStore().find(x => x.id === id); if(!r) return; editId = id; document.getElementById('saveBtn').textContent = 'Guardar cambios'; ['fecha','turno','faena','equipo','operador','frente','tipoPerforacion','diametro','tipoBarra','largoBarra','numTaladros','profundidadProm','horasPerforacion','observacion'].forEach(k => document.getElementById(k).value = r[k] ?? ''); const inputPanel = document.querySelectorAll('details.panel-toggle')[1]; if(inputPanel) inputPanel.open = true; window.scrollTo({top:0, behavior:'smooth'}); }
+function delRecord(id){ if(!confirm('¿Eliminar este registro?')) return; const rows = getStore().filter(r => r.id !== id); setStore(rows); render(); }
+function resetAll(){ if(!confirm('¿Borrar todos los registros locales?')) return; localStorage.removeItem(STORAGE_KEY); render(); }
+function populateFilters(rows){
+  const setOpt=(id,vals)=>{
+    const el=document.getElementById(id);
+    const cur=el.value;
+    const first=el.options[0].outerHTML;
+    el.innerHTML = first + vals.map(v=>`<option value="${escHtml(v)}">${escHtml(v)}</option>`).join('');
+    if(vals.includes(cur)) el.value=cur;
+  };
+  const faenas = uniqueSortedValues(rows,'faena');
+  const equipos = uniqueSortedValues(rows,'equipo');
+  const operadores = uniqueSortedValues(rows,'operador');
+  const tipos = uniqueSortedValues(rows,'tipoPerforacion');
+  setOpt('fFaena', faenas);
+  setOpt('fEquipo', equipos);
+  setOpt('fOperador', operadores);
+  setOpt('fTipo', tipos);
+  fillDatalist('faenaOptions', faenas);
+  fillDatalist('equipoOptions', equipos);
+  fillDatalist('operadorOptions', operadores);
+}
+function filteredRows(){ let rows = getStore().map(normalize).filter(Boolean); const d1=document.getElementById('fDesde').value, d2=document.getElementById('fHasta').value, fa=document.getElementById('fFaena').value, eq=document.getElementById('fEquipo').value, op=document.getElementById('fOperador').value, tp=document.getElementById('fTipo').value; return rows.filter(r => (!d1 || r.fecha>=d1) && (!d2 || r.fecha<=d2) && (!fa || r.faena===fa) && (!eq || r.equipo===eq) && (!op || r.operador===op) && (!tp || r.tipoPerforacion===tp)); }
+function sumBy(rows,key,val='metrosPerforados'){ const o={}; rows.forEach(r=>{ const k = r[key] || 'Sin dato'; o[k]=(o[k]||0)+Number(r[val]||0); }); return Object.entries(o).sort((a,b)=>b[1]-a[1]); }
+function avgBy(rows,key,val){ const o={}; rows.forEach(r=>{ const k=r[key]||'Sin dato'; if(!o[k]) o[k]={sum:0,c:0}; const v=Number(r[val]||0); if(v>0){ o[k].sum += v; o[k].c += 1; } }); return Object.entries(o).map(([k,v])=>[k,v.c ? round(v.sum/v.c,2) : 0]).sort((a,b)=>b[1]-a[1]); }
+function byMonth(rows){ const o={}; rows.forEach(r=>{ if(!r.fecha) return; const k=r.fecha.slice(0,7); o[k]=(o[k]||0)+Number(r.metrosPerforados||0); }); return Object.entries(o).sort((a,b)=>a[0].localeCompare(b[0])); }
+function renderKpis(rows){
+  const totalM=round(rows.reduce((a,r)=>a+Number(r.metrosPerforados||0),0));
+  const totalAcero=round(rows.reduce((a,r)=>a+Number(r.aceroTotal||0),0));
+  const totalBit=round(rows.reduce((a,r)=>a+Number(r.consumoBit||0),0));
+  const totalBarra=round(rows.reduce((a,r)=>a+Number(r.consumoBarra||0),0));
+  const totalCulatin=round(rows.reduce((a,r)=>a+Number(r.consumoCulatin||0),0));
+  const totalH=round(rows.reduce((a,r)=>a+Number(r.horasPerforacion||0),0),2);
+  const mph= totalH>0 ? round(totalM/totalH) : 0;
+  const conMetros = rows.filter(r=>Number(r.metrosPerforados||0)>0);
+  const avgAcero = conMetros.length ? round(conMetros.reduce((a,r)=>a+Number(r.aceroPorMetro||0),0)/conMetros.length,3) : 0;
+  const leaderFaena=sumBy(rows,'faena')[0]||['-',0];
+  const leaderEquipo=sumBy(rows,'equipo')[0]||['-',0];
+  const opLeader=sumBy(rows,'operador')[0]||['-',0];
+  const kpis=[
+    ['Metros filtrados',`${totalM} m`,`${rows.length} registros`],
+    ['Acero total',`${totalAcero} m`,'Suma filtrada'],
+    ['Consumo BIT',`${totalBit}`,'Unidades estimadas'],
+    ['Consumo BARRA',`${totalBarra}`,'Unidades estimadas'],
+    ['Consumo CULATÍN',`${totalCulatin}`,'Unidades estimadas'],
+    ['m/h global', mph?`${mph} m/h`:'N/D','Requiere horas efectivas'],
+    ['Acero por metro', avgAcero?`${avgAcero}`:'N/D','Promedio filtrado'],
+    ['Faena líder', leaderFaena[0], `${leaderFaena[1]} m`],
+    ['Equipo líder', leaderEquipo[0], `${leaderEquipo[1]} m`],
+    ['Operador líder', opLeader[0], `${opLeader[1]} m`]
+  ];
+  document.getElementById('kpis').innerHTML = kpis.map(([t,v,s])=>`<div class="kpi"><div class="t">${escHtml(t)}</div><div class="v">${escHtml(String(v))}</div><div class="s">${escHtml(String(s))}</div></div>`).join('');
+}
+function renderTable(rows){
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = rows.slice().sort((a,b)=>String(b.fecha).localeCompare(String(a.fecha))).map(r=>`<tr><td>${prettyDate(r.fecha)}</td><td>${escHtml(r.turno)}</td><td>${escHtml(r.faena)}</td><td>${escHtml(r.equipo)}</td><td>${escHtml(r.operador)}</td><td>${escHtml(r.frente)}</td><td>${escHtml(r.tipoPerforacion)}</td><td>${round(r.metrosPerforados)}</td><td>${r.mph||''}</td><td>${r.aceroPorMetro||''}</td><td><span class="tag ${r.syncStatus==='sincronizado'?'ok':r.syncStatus==='error'?'err':'pend'}">${escHtml(r.syncStatus||'pendiente')}</span></td><td><button onclick="editRecord('${r.id}')">Editar</button> <button onclick="delRecord('${r.id}')">Eliminar</button></td></tr>`).join('');
+}
+function renderResumen(rows){ const porFaena=sumBy(rows,'faena').slice(0,5); const porEquipo=sumBy(rows,'equipo').slice(0,5); const porOperador=sumBy(rows,'operador').slice(0,5); document.getElementById('resumen').innerHTML = `<b>Top faenas</b><br>${porFaena.map(([k,v],i)=>`${i+1}. ${escHtml(k)}: <b>${round(v)} m</b>`).join('<br>') || 'Sin datos'}<br><br><b>Top equipos</b><br>${porEquipo.map(([k,v],i)=>`${i+1}. ${escHtml(k)}: <b>${round(v)} m</b>`).join('<br>') || 'Sin datos'}<br><br><b>Top operadores</b><br>${porOperador.map(([k,v],i)=>`${i+1}. ${escHtml(k)}: <b>${round(v)} m</b>`).join('<br>') || 'Sin datos'}`; }
+function drawBarChart(canvasId, data, opts={}){
+  const c=document.getElementById(canvasId), ctx=c.getContext('2d'); const ratio=window.devicePixelRatio||1; const w=c.clientWidth, h=c.clientHeight; c.width=w*ratio; c.height=h*ratio; ctx.setTransform(ratio,0,0,ratio,0,0); ctx.clearRect(0,0,w,h); const pad={l:46,r:14,t:14,b:58}, innerW=w-pad.l-pad.r, innerH=h-pad.t-pad.b; ctx.strokeStyle='#334155'; ctx.strokeRect(pad.l,pad.t,innerW,innerH); if(!data.length){ ctx.fillStyle='#94a3b8'; ctx.font='12px Arial'; ctx.fillText('Sin datos para este filtro',20,26); return; } const max=Math.max(...data.map(x=>Number(x[1])||0),1); const barW=Math.max(18, innerW/data.length*0.6); const gap=(innerW - barW*data.length)/Math.max(data.length,1); ctx.font='11px Arial'; for(let i=0;i<=4;i++){ const y=pad.t + innerH - i*(innerH/4); ctx.strokeStyle='rgba(148,163,184,.15)'; ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(pad.l+innerW,y); ctx.stroke(); ctx.fillStyle='#94a3b8'; ctx.fillText(String(round(max*i/4)), 4, y+4); } data.forEach(([label,val],i)=>{ const x=pad.l + gap/2 + i*(barW+gap), bh=(Number(val)||0)/max*innerH, y=pad.t + innerH - bh; const grad=ctx.createLinearGradient(0,y,0,y+bh); grad.addColorStop(0, opts.c1 || '#38bdf8'); grad.addColorStop(1, opts.c2 || '#22c55e'); ctx.fillStyle=grad; ctx.fillRect(x,y,barW,bh); ctx.fillStyle='#e5e7eb'; ctx.fillText(String(round(val)), x, Math.max(10,y-4)); ctx.save(); ctx.translate(x+barW/2,h-8); ctx.rotate(-0.55); const text=String(label).length>14?String(label).slice(0,14)+'…':String(label); ctx.fillText(text,0,0); ctx.restore(); });
+}
+async function syncToBase(){
+  const url = getAppsScriptUrl();
+  if(!url) { alert('Primero guarda la URL de Apps Script.'); return; }
+  let rows = getStore();
+  const pending = rows.filter(r => r.syncStatus !== 'sincronizado');
+  if(!pending.length){ alert('No hay pendientes por sincronizar.'); return; }
+  for(const r of pending){
+    try{
+      const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(r) });
+      if(!res.ok) throw new Error('Error HTTP');
+      r.syncStatus = 'sincronizado';
+      r.syncedAt = new Date().toISOString();
+    }catch(err){ r.syncStatus = 'error'; }
+  }
+  setStore(rows); render(); alert('Sincronización finalizada.');
+}
+async function loadFromBase(){
+  const url = getAppsScriptUrl();
+  if(!url){ alert('Primero guarda la URL de Apps Script.'); return; }
+  try{
+    const res = await fetch(url + '?mode=list');
+    if(!res.ok) throw new Error('No se pudo leer la base.');
+    const data = await res.json();
+    const rows = Array.isArray(data.rows) ? data.rows.map(parseLegacyRow).filter(Boolean) : [];
+    mergeRecords(rows, true);
+    render();
+    alert(`Se cargaron ${rows.length} registros desde la base.`);
+  }catch(err){
+    alert('No se pudo cargar desde la base. Revisa la URL del Apps Script y su despliegue.');
+  }
+}
+function exportCSV(){ const rows=filteredRows(); if(!rows.length){ alert('No hay registros para exportar.'); return; } const headers=['id','fecha','turno','faena','equipo','operador','frente','tipoPerforacion','diametro','tipoBarra','largoBarra','numTaladros','profundidadProm','horasPerforacion','metrosPerforados','aceroTotal','consumoBit','consumoBarra','consumoCulatin','mph','aceroPorMetro','syncStatus','observacion']; let csv='\ufeff'+headers.join(';')+'\n'; rows.forEach(r=>{ csv += headers.map(h=>String(r[h]??'').replaceAll(';',',')).join(';')+'\n'; }); const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='dashboard_perforacion_full.csv'; a.click(); URL.revokeObjectURL(a.href); }
+function downloadTemplate(){ const headers=['id','fecha','turno','faena','equipo','operador','frente','tipoPerforacion','diametro','tipoBarra','largoBarra','numTaladros','profundidadProm','horasPerforacion','metrosPerforados','aceroTotal','consumoBit','consumoBarra','consumoCulatin','mph','aceroPorMetro','observacion']; const sample=['','2026-03-01','A','PILAR NORTE','SANDVIK DD321D J-587','MARCO GONZALEZ','SOC FW','Fortificación','45','3.10_T38R32','3.1','30','3','2','90','90','1.13','0.36','0.26','45','1','Registro de ejemplo']; const csv='\ufeff'+headers.join(';')+'\n'+sample.join(';')+'\n'; const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='plantilla_perforacion.csv'; a.click(); URL.revokeObjectURL(a.href); }
+function parseCSV(text){ const lines = text.replace(/\r/g,'').split('\n').filter(Boolean); if(lines.length < 2) return []; const sep = lines[0].includes(';') ? ';' : ','; const headers = lines[0].split(sep).map(h=>h.trim()); return lines.slice(1).map(line => { const cols = line.split(sep); const obj = {}; headers.forEach((h,i)=> obj[h] = cols[i] ?? ''); return obj; }).map(parseLegacyRow).filter(Boolean); }
+function importCSVFile(file){ const reader = new FileReader(); reader.onload = e => { try{ const rows = parseCSV(e.target.result); if(!rows.length){ alert('No se encontraron filas válidas en el CSV.'); return; } mergeRecords(rows, true); render(); alert(`Se importaron ${rows.length} registros.`); } catch(err){ alert('No se pudo leer el archivo CSV.'); } }; reader.readAsText(file, 'utf-8'); }
+function resetFilters(){ ['fDesde','fHasta','fFaena','fEquipo','fOperador','fTipo'].forEach(id=>document.getElementById(id).value=''); render(); }
+function filteredRows(){ let rows = getStore().map(normalize).filter(Boolean); const d1=document.getElementById('fDesde').value, d2=document.getElementById('fHasta').value, fa=document.getElementById('fFaena').value, eq=document.getElementById('fEquipo').value, op=document.getElementById('fOperador').value, tp=document.getElementById('fTipo').value; return rows.filter(r => (!d1 || r.fecha>=d1) && (!d2 || r.fecha<=d2) && (!fa || r.faena===fa) && (!eq || r.equipo===eq) && (!op || r.operador===op) && (!tp || r.tipoPerforacion===tp)); }
+function render(){
+  const all = getStore().map(normalize).filter(Boolean); setStore(all); populateFilters(all); const rows = filteredRows(); renderKpis(rows); renderTable(rows); renderResumen(rows);
+  drawBarChart('chartMes', byMonth(rows), {c1:'#60a5fa',c2:'#22c55e'});
+  drawBarChart('chartFaena', sumBy(rows,'faena').slice(0,8), {c1:'#f59e0b',c2:'#ef4444'});
+  drawBarChart('chartEquipo', sumBy(rows,'equipo').slice(0,8), {c1:'#38bdf8',c2:'#22c55e'});
+  drawBarChart('chartOperador', sumBy(rows,'operador').slice(0,8), {c1:'#a78bfa',c2:'#38bdf8'});
+  drawBarChart('chartMph', avgBy(rows.filter(r=>Number(r.mph||0)>0),'operador','mph').slice(0,8), {c1:'#34d399',c2:'#60a5fa'});
+  drawBarChart('chartAcero', avgBy(rows.filter(r=>Number(r.aceroPorMetro||0)>0),'equipo','aceroPorMetro').slice(0,8), {c1:'#fb7185',c2:'#f59e0b'});
+  drawBarChart('chartAceroTotal', sumBy(rows,'equipo','aceroTotal').slice(0,8), {c1:'#22c55e',c2:'#60a5fa'});
+  drawBarChart('chartBit', sumBy(rows,'equipo','consumoBit').slice(0,8), {c1:'#f59e0b',c2:'#ef4444'});
+  drawBarChart('chartBarra', sumBy(rows,'equipo','consumoBarra').slice(0,8), {c1:'#8b5cf6',c2:'#38bdf8'});
+  drawBarChart('chartCulatin', sumBy(rows,'equipo','consumoCulatin').slice(0,8), {c1:'#f97316',c2:'#eab308'});
+}
+window.editRecord = editRecord; window.delRecord = delRecord;
+document.addEventListener('DOMContentLoaded',()=>{
+  migrateLegacy();
+  document.getElementById('appsScriptUrl').value = getAppsScriptUrl();
+  document.getElementById('saveConfigBtn').addEventListener('click', saveConfig);
+  document.getElementById('loadBaseBtn').addEventListener('click', loadFromBase);
+  document.getElementById('saveBtn').addEventListener('click', saveRecord);
+  document.getElementById('syncBtn').addEventListener('click', syncToBase);
+  document.getElementById('exportBtn').addEventListener('click', exportCSV);
+  document.getElementById('printBtn').addEventListener('click', ()=>window.print());
+  document.getElementById('clearBtn').addEventListener('click', resetAll);
+  document.getElementById('resetFilters').addEventListener('click', resetFilters);
+  document.getElementById('downloadTemplateBtn').addEventListener('click', downloadTemplate);
+  document.getElementById('importCSV').addEventListener('change', e => { const f = e.target.files[0]; if(f) importCSVFile(f); e.target.value = ''; });
+  ['fDesde','fHasta','fFaena','fEquipo','fOperador','fTipo'].forEach(id=>document.getElementById(id).addEventListener('change', render));
+  ['fecha','fDesde','fHasta'].forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener('focus', () => tryShowPicker(el));
+    el.addEventListener('click', () => tryShowPicker(el));
+  });
+  render();
+});
+</script>
 </body>
 </html>
