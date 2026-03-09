@@ -60,7 +60,7 @@
       <div>
         <h1>Dashboard de Perforación Full</h1>
         <div class="sub">Con ingreso local, importación CSV, lectura desde base, sincronización y gráficos operacionales.</div>
-        <div id="sharedStatus" class="small" style="margin-top:6px;color:#cbd5e1">Modo compartido: cargando…</div>
+        <div id="sharedStatus" class="small" style="margin-top:6px;color:#cbd5e1">Modo compartido: iniciando…</div>
       </div>
     <div>
     <img src="logo_Xtreme.png" alt="Xtreme Mining" />
@@ -81,7 +81,7 @@
     <div class="form-grid">
       <div style="grid-column:1/-1">
         <label>URL de Google Apps Script</label>
-        <input id="appsScriptUrl" placeholder="https://script.google.com/macros/s/AKfycbwFOTs1Alkf5hX-jvlVr6hIfuhxeQ4L6prP0MSoiRYbElCWejKK7e6Hb6ighrXVdWaw/exec>
+        <input id="appsScriptUrl" placeholder="https://script.google.com/macros/s/AKfycbwTVIEw33YbHYSxFLFJuFr402j3GLSnzQDblUyQ6XAFpQwIlTR4aqvQGMJ2GAOzmjm5/exec">
       </div>
       <div>
         <label>Horas históricas por defecto</label>
@@ -206,7 +206,7 @@ const LEGACY_KEYS = ['registro_perforacion_datos','registro_perforacion_pro_dato
 const parametros = { BIT:{'45':80,'51':100,'64':100}, BARRA:{'45':250,'51':300,'64':300}, CULATIN:{'45':350,'51':350,'64':350}, BARRA_MF_T38:250 };
 const DEFAULT_HORAS_HISTORICAS = 8;
 /* Pega aquí tu URL /exec de Google Apps Script si quieres que el HTML quede listo para compartir sin configuración manual */
-const DEFAULT_APPS_SCRIPT_URL = '';
+const DEFAULT_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwvq4kKbl_Ty98LD85yIjNOxqd1v-oqHPLQc0a2fwwE7ldRk3zp6YbsnwcUWMmeZtZA/exec'; // Pega aquí tu URL /exec si quieres dejarla fija para todos
 let editId = null;
 
 function uid(){ return `REG-${Date.now()}-${Math.floor(Math.random()*100000)}`; }
@@ -400,6 +400,14 @@ function saveRecord(){
   if(i >= 0){ rec.createdAt = rows[i].createdAt || rec.createdAt; rows[i] = rec; }
   else rows.push(rec);
   setStore(rows); clearForm(); render();
+  const url = getAppsScriptUrl();
+  if(navigator.onLine && url){
+    syncToBase().catch(()=>{});
+  } else if(!url){
+    updateSharedStatus('Modo compartido: registro guardado localmente. Falta enlazar la base central en este HTML o en el link.', 'warn');
+  } else {
+    updateSharedStatus('Modo compartido: registro guardado localmente. Se sincronizará cuando vuelva internet.', 'warn');
+  }
 }
 function editRecord(id){ const r = getStore().find(x => x.id === id); if(!r) return; editId = id; document.getElementById('saveBtn').textContent = 'Guardar cambios'; ['fecha','turno','faena','equipo','operador','frente','tipoPerforacion','diametro','tipoBarra','largoBarra','numTaladros','profundidadProm','horasPerforacion','observacion'].forEach(k => document.getElementById(k).value = r[k] ?? ''); const inputPanel = document.querySelectorAll('details.panel-toggle')[1]; if(inputPanel) inputPanel.open = true; window.scrollTo({top:0, behavior:'smooth'}); }
 function delRecord(id){ if(!confirm('¿Eliminar este registro?')) return; const rows = getStore().filter(r => r.id !== id); setStore(rows); render(); }
@@ -475,7 +483,7 @@ function updateSharedStatus(msg, tone='info'){
 async function cargarDesdeBaseSilencioso(){
   const url = getAppsScriptUrl();
   if(!url){
-    updateSharedStatus('Modo compartido: falta configurar URL de Apps Script. Se muestran solo datos locales.', 'warn');
+    updateSharedStatus('Modo compartido: sin base central configurada en este enlace. Se muestran datos locales.', 'warn');
     return {loaded:0, mode:'local'};
   }
   try{
@@ -500,8 +508,16 @@ async function syncToBase(){
   if(!pending.length){ alert('No hay pendientes por sincronizar.'); return; }
   for(const r of pending){
     try{
-      const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(r) });
+      const res = await fetch(url, {
+        method:'POST',
+        headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body:JSON.stringify(r),
+        cache:'no-store'
+      });
       if(!res.ok) throw new Error('Error HTTP');
+      let payload = {};
+      try{ payload = await res.json(); }catch(e){}
+      if(payload && payload.ok === false) throw new Error(payload.error || 'Error de sincronización');
       r.syncStatus = 'sincronizado';
       r.syncedAt = new Date().toISOString();
     }catch(err){ r.syncStatus = 'error'; }
