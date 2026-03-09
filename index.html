@@ -81,11 +81,11 @@
     <div class="form-grid">
       <div style="grid-column:1/-1">
         <label>URL de Google Apps Script</label>
-        <input id="appsScriptUrl" placeholder="https://script.google.com/macros/s/AKfycbwFOTs1Alkf5hX-jvlVr6hIfuhxeQ4L6prP0MSoiRYbElCWejKK7e6Hb6ighrXVdWaw/exec">
+        <input id="appsScriptUrl" placeholder="https://script.google.com/macros/s/AKfycbwFOTs1Alkf5hX-jvlVr6hIfuhxeQ4L6prP0MSoiRYbElCWejKK7e6Hb6ighrXVdWaw/exec>
       </div>
       <div>
         <label>Horas históricas por defecto</label>
-        <input type="number" step="0.01" id="defaultHorasHistoricas" value="8.5">
+        <input type="number" step="0.01" id="defaultHorasHistoricas" value="8">
       </div>
     </div>
     <div class="btnrow">
@@ -205,6 +205,8 @@ const CONFIG_KEY = 'dashboard_perforacion_full_config';
 const LEGACY_KEYS = ['registro_perforacion_datos','registro_perforacion_pro_datos','registro_perforacion_dashboard_avanzado_v2'];
 const parametros = { BIT:{'45':80,'51':100,'64':100}, BARRA:{'45':250,'51':300,'64':300}, CULATIN:{'45':350,'51':350,'64':350}, BARRA_MF_T38:250 };
 const DEFAULT_HORAS_HISTORICAS = 8;
+/* Pega aquí tu URL /exec de Google Apps Script si quieres que el HTML quede listo para compartir sin configuración manual */
+const DEFAULT_APPS_SCRIPT_URL = '';
 let editId = null;
 
 function uid(){ return `REG-${Date.now()}-${Math.floor(Math.random()*100000)}`; }
@@ -222,7 +224,12 @@ function saveConfig(){
   alert('Configuración guardada.');
   render();
 }
-function getAppsScriptUrl(){ return (config().appsScriptUrl || '').trim(); }
+function getAppsScriptUrl(){
+  const urlParam = new URLSearchParams(window.location.search).get('appsScriptUrl');
+  const saved = (config().appsScriptUrl || '').trim();
+  const embedded = (DEFAULT_APPS_SCRIPT_URL || '').trim();
+  return (urlParam || saved || embedded).trim();
+}
 function getDefaultHorasHistoricas(){
   const v = Number(config().defaultHorasHistoricas || DEFAULT_HORAS_HISTORICAS);
   return v > 0 ? v : DEFAULT_HORAS_HISTORICAS;
