@@ -574,8 +574,19 @@ function syncBarraDropdowns(){
     if(found) tipo.value = found[0];
   });
 }
-document.addEventListener('DOMContentLoaded',()=>{
+document.addEventListener('DOMContentLoaded',async ()=>{
+
   migrateLegacy();
+
+  try{
+    await loadFromBase();
+  }catch(e){
+    console.log("No se pudo cargar la base");
+  }
+
+  render();
+
+});
   document.getElementById('appsScriptUrl').value = getAppsScriptUrl();
   const dhh = document.getElementById('defaultHorasHistoricas'); if(dhh) dhh.value = getDefaultHorasHistoricas();
   document.getElementById('saveConfigBtn').addEventListener('click', async () => { saveConfig(); await cargarDesdeBaseSilencioso(); render(); });
