@@ -60,6 +60,7 @@
       <div>
         <h1>Dashboard de Perforación Full</h1>
         <div class="sub">Con ingreso local, importación CSV, lectura desde base, sincronización y gráficos operacionales.</div>
+        <div id="sharedStatus" class="small" style="margin-top:6px;color:#cbd5e1">Modo compartido: cargando…</div>
       </div>
     <div>
     <img src="logo_Xtreme.png" alt="Xtreme Mining" />
@@ -80,7 +81,7 @@
     <div class="form-grid">
       <div style="grid-column:1/-1">
         <label>URL de Google Apps Script</label>
-        <input id="appsScriptUrl" placeholder="https://script.google.com/macros/s/AKfycbzbjTBfdFRzPOsMWRbPga4se3tVe2TQWaKHF9otS3MsfjtGNrq1d5d4Ix8o9SU8aUix/exec">
+        <input id="appsScriptUrl" placeholder="https://script.google.com/macros/s/AKfycbwFOTs1Alkf5hX-jvlVr6hIfuhxeQ4L6prP0MSoiRYbElCWejKK7e6Hb6ighrXVdWaw/exec>
       </div>
       <div>
         <label>Horas históricas por defecto</label>
@@ -90,6 +91,7 @@
     <div class="btnrow">
       <button class="btn6" id="saveConfigBtn">Guardar URL</button>
       <button class="btn2" id="loadBaseBtn">Cargar desde base</button>
+      <button class="btn" id="refreshSharedBtn">Actualizar vista compartida</button>
       <button class="btn5" id="downloadTemplateBtn">Descargar plantilla CSV</button>
       <label class="btn3" for="importCSV" style="display:inline-flex;align-items:center">Importar CSV</label>
       <input type="file" id="importCSV" accept=".csv" style="display:none">
@@ -456,6 +458,33 @@ function renderResumen(rows){ const porFaena=sumBy(rows,'faena').slice(0,5); con
 function drawBarChart(canvasId, data, opts={}){
   const c=document.getElementById(canvasId), ctx=c.getContext('2d'); const ratio=window.devicePixelRatio||1; const w=c.clientWidth, h=c.clientHeight; c.width=w*ratio; c.height=h*ratio; ctx.setTransform(ratio,0,0,ratio,0,0); ctx.clearRect(0,0,w,h); const pad={l:46,r:14,t:14,b:58}, innerW=w-pad.l-pad.r, innerH=h-pad.t-pad.b; ctx.strokeStyle='#334155'; ctx.strokeRect(pad.l,pad.t,innerW,innerH); if(!data.length){ ctx.fillStyle='#94a3b8'; ctx.font='12px Arial'; ctx.fillText('Sin datos para este filtro',20,26); return; } const max=Math.max(...data.map(x=>Number(x[1])||0),1); const barW=Math.max(18, innerW/data.length*0.6); const gap=(innerW - barW*data.length)/Math.max(data.length,1); ctx.font='11px Arial'; for(let i=0;i<=4;i++){ const y=pad.t + innerH - i*(innerH/4); ctx.strokeStyle='rgba(148,163,184,.15)'; ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(pad.l+innerW,y); ctx.stroke(); ctx.fillStyle='#94a3b8'; ctx.fillText(String(round(max*i/4)), 4, y+4); } data.forEach(([label,val],i)=>{ const x=pad.l + gap/2 + i*(barW+gap), bh=(Number(val)||0)/max*innerH, y=pad.t + innerH - bh; const grad=ctx.createLinearGradient(0,y,0,y+bh); grad.addColorStop(0, opts.c1 || '#38bdf8'); grad.addColorStop(1, opts.c2 || '#22c55e'); ctx.fillStyle=grad; ctx.fillRect(x,y,barW,bh); ctx.fillStyle='#e5e7eb'; ctx.fillText(String(round(val)), x, Math.max(10,y-4)); ctx.save(); ctx.translate(x+barW/2,h-8); ctx.rotate(-0.55); const text=String(label).length>14?String(label).slice(0,14)+'…':String(label); ctx.fillText(text,0,0); ctx.restore(); });
 }
+function updateSharedStatus(msg, tone='info'){
+  const el = document.getElementById('sharedStatus');
+  if(!el) return;
+  const colors = {info:'#cbd5e1', ok:'#86efac', warn:'#fcd34d', err:'#fca5a5'};
+  el.style.color = colors[tone] || colors.info;
+  el.textContent = msg;
+}
+async function cargarDesdeBaseSilencioso(){
+  const url = getAppsScriptUrl();
+  if(!url){
+    updateSharedStatus('Modo compartido: falta configurar URL de Apps Script. Se muestran solo datos locales.', 'warn');
+    return {loaded:0, mode:'local'};
+  }
+  try{
+    updateSharedStatus('Modo compartido: consultando base central…', 'info');
+    const res = await fetch(url + '?mode=list&_ts=' + Date.now(), {cache:'no-store'});
+    if(!res.ok) throw new Error('No se pudo leer la base');
+    const data = await res.json();
+    const rows = Array.isArray(data.rows) ? data.rows.map(parseLegacyRow).filter(Boolean) : [];
+    mergeRecords(rows, true);
+    updateSharedStatus(`Modo compartido: ${rows.length} registros visibles desde la base central.`, 'ok');
+    return {loaded:rows.length, mode:'shared'};
+  }catch(err){
+    updateSharedStatus('Modo compartido: sin conexión con la base. Se muestran datos locales guardados en este equipo.', 'warn');
+    return {loaded:0, mode:'offline-fallback'};
+  }
+}
 async function syncToBase(){
   const url = getAppsScriptUrl();
   if(!url) { alert('Primero guarda la URL de Apps Script.'); return; }
@@ -470,22 +499,16 @@ async function syncToBase(){
       r.syncedAt = new Date().toISOString();
     }catch(err){ r.syncStatus = 'error'; }
   }
-  setStore(rows); render(); alert('Sincronización finalizada.');
+  setStore(rows);
+  await cargarDesdeBaseSilencioso();
+  render();
+  alert('Sincronización finalizada.');
 }
 async function loadFromBase(){
-  const url = getAppsScriptUrl();
-  if(!url){ alert('Primero guarda la URL de Apps Script.'); return; }
-  try{
-    const res = await fetch(url + '?mode=list');
-    if(!res.ok) throw new Error('No se pudo leer la base.');
-    const data = await res.json();
-    const rows = Array.isArray(data.rows) ? data.rows.map(parseLegacyRow).filter(Boolean) : [];
-    mergeRecords(rows, true);
-    render();
-    alert(`Se cargaron ${rows.length} registros desde la base.`);
-  }catch(err){
-    alert('No se pudo cargar desde la base. Revisa la URL del Apps Script y su despliegue.');
-  }
+  const result = await cargarDesdeBaseSilencioso();
+  render();
+  if(result.mode === 'shared') alert(`Se cargaron ${result.loaded} registros desde la base.`);
+  else alert('No se pudo cargar desde la base. Revisa la URL del Apps Script y su despliegue.');
 }
 function exportCSV(){ const rows=filteredRows(); if(!rows.length){ alert('No hay registros para exportar.'); return; } const headers=['id','fecha','turno','faena','equipo','operador','frente','tipoPerforacion','diametro','tipoBarra','largoBarra','numTaladros','profundidadProm','horasPerforacion','metrosPerforados','aceroTotal','consumoBit','consumoBarra','consumoCulatin','mph','aceroPorMetro','syncStatus','observacion']; let csv='\ufeff'+headers.join(';')+'\n'; rows.forEach(r=>{ csv += headers.map(h=>String(r[h]??'').replaceAll(';',',')).join(';')+'\n'; }); const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='dashboard_perforacion_full.csv'; a.click(); URL.revokeObjectURL(a.href); }
 function downloadTemplate(){ const headers=['id','fecha','turno','faena','equipo','operador','frente','tipoPerforacion','diametro','tipoBarra','largoBarra','numTaladros','profundidadProm','horasPerforacion','metrosPerforados','aceroTotal','consumoBit','consumoBarra','consumoCulatin','mph','aceroPorMetro','observacion']; const sample=['','2026-03-01','A','PILAR NORTE','SANDVIK DD321D J-587','MARCO GONZALEZ','SOC FW','Fortificación','45','3.10_T38R32','3.1','30','3','2','90','90','1.13','0.36','0.26','45','1','Registro de ejemplo']; const csv='\ufeff'+headers.join(';')+'\n'+sample.join(';')+'\n'; const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='plantilla_perforacion.csv'; a.click(); URL.revokeObjectURL(a.href); }
@@ -532,8 +555,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   migrateLegacy();
   document.getElementById('appsScriptUrl').value = getAppsScriptUrl();
   const dhh = document.getElementById('defaultHorasHistoricas'); if(dhh) dhh.value = getDefaultHorasHistoricas();
-  document.getElementById('saveConfigBtn').addEventListener('click', saveConfig);
+  document.getElementById('saveConfigBtn').addEventListener('click', async () => { saveConfig(); await cargarDesdeBaseSilencioso(); render(); });
   document.getElementById('loadBaseBtn').addEventListener('click', loadFromBase);
+  document.getElementById('refreshSharedBtn').addEventListener('click', loadFromBase);
   document.getElementById('saveBtn').addEventListener('click', saveRecord);
   document.getElementById('syncBtn').addEventListener('click', syncToBase);
   document.getElementById('exportBtn').addEventListener('click', exportCSV);
@@ -548,7 +572,13 @@ document.addEventListener('DOMContentLoaded',()=>{
     el.addEventListener('focus', () => tryShowPicker(el));
     el.addEventListener('click', () => tryShowPicker(el));
   });
-  render();
+  window.addEventListener('online', async () => { await cargarDesdeBaseSilencioso(); render(); });
+  window.addEventListener('offline', () => { updateSharedStatus('Modo compartido: sin internet. Se muestran datos locales guardados en este equipo.', 'warn'); });
+  (async () => {
+    render();
+    await cargarDesdeBaseSilencioso();
+    render();
+  })();
 });
 </script>
 </body>
